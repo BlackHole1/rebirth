@@ -1,0 +1,25 @@
+const { type } = require('os');
+const { CHROME_PATH_LINUX, CHROME_PATH_MAC, USER_DATA_DIR_MAC, USER_DATA_DIR_LINUX } = require('./constants');
+
+module.exports.ToString = val => typeof val === 'string' ? val : JSON.stringify(val);
+
+module.exports.paramsToObj = params => {
+  if (!params) return {};
+
+  const result = {};
+  params.split('&').forEach(p => {
+    if (p.indexOf('=') === -1) {
+      result[p] = undefined;
+    } else {
+      const [key, value] = p.split('=');
+      result[key] = value;
+    }
+  });
+  return result;
+};
+
+const isMac = type() === 'Darwin';
+
+module.exports.chromePath = isMac ? CHROME_PATH_MAC : CHROME_PATH_LINUX;
+
+module.exports.userDataPath = isMac ? USER_DATA_DIR_MAC : USER_DATA_DIR_LINUX;
