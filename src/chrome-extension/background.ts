@@ -5,6 +5,7 @@ import { RecordNumber } from './lib/constants';
 import recordingQueue from './lib/recordingQueue';
 import actions from './lib/recording';
 import { IData } from './typing/background';
+import { randomNumber } from './lib/utils';
 
 // 获取需要录制的网站以及打开
 const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
@@ -29,16 +30,19 @@ const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
     });
 };
 
-// 在运行的时候先执行一次
-getRecordTasksAndStartTab();
+// 为了防止多个容器同时请求数据库(高并发的情况下)，数据还未及时更新造成的多个容器录制同一个网站的情况。
+setTimeout(() => {
+  getRecordTasksAndStartTab();
 
-// 每隔3分钟请求一次
-setInterval(() => {
-  const getFreeNumber = tabs.getFreeNumber();
+  // 每隔 随机后的1分钟~3分钟 请求一次
+  setInterval(() => {
+    const getFreeNumber = tabs.getFreeNumber();
 
-  if (getFreeNumber === 0) return;
-  getRecordTasksAndStartTab(getFreeNumber);
-}, 1000 * 60 * 3);
+    if (getFreeNumber === 0) return;
+    getRecordTasksAndStartTab(getFreeNumber);
+  }, randomNumber(1000 * 60, 3000 * 60));
+
+}, randomNumber(1000, 3000 * 10));
 
 // 监听网页消息
 chrome.runtime.onConnect.addListener(port => {
