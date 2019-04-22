@@ -3,6 +3,7 @@ const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
 
 const getRecord = (req, res) => {
+  // 如果已经有服务挂了，则不要再返回录制任务了
   if (!servicesStatus.isNormal) {
     res.sendJson([]);
     return;

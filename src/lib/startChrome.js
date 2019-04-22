@@ -7,7 +7,6 @@ const width = 1920;
 const height = 1080;
 const options = {
   handleSIGTERM: false,
-  handleSIGINT: false,
   headless: false,
   executablePath: chromePath,
   args: [

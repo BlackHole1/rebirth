@@ -14,7 +14,7 @@ server.listen(PORT, () => {
 startChrome();
 
 // 当接收到k8s发来的关闭请求时，做出处理
-console.log(process.pid);
+console.log(`current NodeJs PID: ${process.pid}`);
 let status = false;
 const exit = () => {
   if (status) return;
@@ -22,7 +22,6 @@ const exit = () => {
   rerecord();
 };
 process.once('exit', exit);
-process.once('SIGINT', exit);
 process.once('SIGTERM', exit);
 process.on('message', message => {
   if (message === 'shutdown') {
