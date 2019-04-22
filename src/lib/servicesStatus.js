@@ -3,6 +3,8 @@ class ServicesStatus {
     this.chromeClose = false;
     this.chromeError = false;
     this.mysqlError = false;
+    this.chromeRemoteDebugError = false;
+    this.chromeCrash = false;
   }
 
   get getChromeClose () {
@@ -29,8 +31,30 @@ class ServicesStatus {
     this.mysqlError = val;
   }
 
+  get getChromeRemoteDebugError () {
+    return this.chromeRemoteDebugError;
+  }
+
+  set setChromeRemoteDebugError (val) {
+    this.chromeRemoteDebugError = val;
+  }
+
+  get getChromeCrash () {
+    return this.chromeCrash;
+  }
+
+  set setChromeCrash (val) {
+    return this.chromeCrash = val;
+  }
+
   get isNormal () {
-    return [this.getChromeClose, this.getChromeError, this.getMysqlError].every(val => !val)
+    return [
+      this.getChromeClose,
+      this.getChromeError,
+      this.getMysqlError,
+      this.getChromeRemoteDebugError,
+      this.getChromeCrash
+    ].every(val => !val)
   }
 }
 

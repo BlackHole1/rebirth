@@ -1,5 +1,6 @@
 const { join } = require('path');
 const puppeteer = require('puppeteer-core');
+const listenCrash = require('./listenCrash');
 const servicesStatus = require('./servicesStatus');
 const { chromePath, userDataPath } = require('./utils');
 
@@ -32,6 +33,8 @@ module.exports = async () => {
   const pages = await browser.pages();
   const page = pages[0];
   await page.goto('http://127.0.0.1');
+
+  listenCrash();
 
   // 正常关闭
   page.on('close', () => {
