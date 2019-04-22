@@ -20,7 +20,7 @@ module.exports =  (req, res) => {
       res.end('');
     },
     '/health': (req, res) => {
-      const statusCode = servicesStatus.isNormal() ? 200 : 500;
+      const statusCode = servicesStatus.isNormal ? 200 : 500;
       res.writeHead(statusCode, CONTENTTYPE_TEXT);
       res.end('');
     }
