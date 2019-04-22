@@ -19,7 +19,9 @@ let status = false;
 const exit = () => {
   if (status) return;
   status = true;
-  rerecord();
+  rerecord(() => {
+    process.exit();
+  });
 };
 process.once('exit', exit);
 process.once('SIGTERM', exit);
