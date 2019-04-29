@@ -1,20 +1,25 @@
 const mysqlService = require('../lib/mysql');
 const recordTasks = require('../lib/recordTasks');
+const servicesStatus = require('../lib/servicesStatus');
+const { MYSQL_TABLE } = require('../lib/constants');
 
 // 完成录制（删除数据）
 const completeRecordTask = (req, res) => {
   const { hash } = req.query;
-  mysqlService.then(async conn => {
-    const result = await conn.query('DELETE FROM record WHERE hash=?', [ hash ]);
-    recordTasks.completeTask = hash;
-    res.sendJson(result);
-  }).catch(e => {
-    res.sendError(
-      'delete fail',
-      e,
-      `DELETE FROM record WHERE hash=${hash}`
-    );
-  });
+  mysqlService.getConnection()
+    .then(async conn => {
+      const result = await conn.query(`DELETE FROM ${MYSQL_TABLE} WHERE hash=?`, [ hash ]);
+      recordTasks.completeTask = hash;
+      res.sendJson(result);
+    })
+    .catch(e => {
+      servicesStatus.setMysqlError = true;
+      res.sendError(
+        'delete fail',
+        e,
+        `DELETE FROM ${MYSQL_TABLE} WHERE hash=${hash}`
+      );
+    });
 };
 
 module.exports = completeRecordTask;
