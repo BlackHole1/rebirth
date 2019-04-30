@@ -93,6 +93,8 @@ docker_build:
     - echo $CI_BUILD_REF
     - echo $REPLIC_COUNT
     - echo $MYSQL_HOST
+    - ls -a
+    - ls -a src
 
 deploy_alpha:
   <<: *DEPLOY
