@@ -1,0 +1,5 @@
+replicaCount: 10
+terminationGracePeriodSeconds: 60
+image:
+  repository: rebirth
+  tag: 0.0.1

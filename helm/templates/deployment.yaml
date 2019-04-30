@@ -1,0 +1,26 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: rebirth
+  labels:
+    release: {{ .Release.Name }}
+    appName: rebirth
+  annotations:
+    chartVersion: {{ .Chart.version }}
+    revision: {{ .Release.Revision }}
+    isUpgrade: {{ .Release.IsUpgrade }}
+    isInstall: {{ .Release.IsInstall }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        release: {{ .Release.Name }}
+        appName: rebirth
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      containers:
+      -
+        name: rebirth
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: IfNotPresent

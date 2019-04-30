@@ -1,0 +1,9 @@
+image: node:10
+
+stages:
+- build
+
+build_project:
+  stage: build
+  script:
+  - la
