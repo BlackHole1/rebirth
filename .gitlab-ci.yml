@@ -62,7 +62,7 @@ docker_build:
     - echo $IMAGE_PER_BRANCH_COMMIT
     - docker pull $IMAGE_PER_BRANCH || true
     - docker build --pull --cache-from $IMAGE_PER_BRANCH -t $IMAGE_PER_BRANCH_COMMIT -t $IMAGE_PER_BRANCH --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f Dockerfile .
-    - ls -a
+    - ls -a src/
     - docker images
 #    - docker push $IMAGE_PER_BRANCH_COMMIT
 #    - docker push $IMAGE_PER_BRANCH
