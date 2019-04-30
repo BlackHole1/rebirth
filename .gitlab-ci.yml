@@ -1,11 +1,11 @@
 image: node:10
 
 stages:
-  - build-project
-  - install-dependent
+  - build
+  - docker_build
 
 build_project:
-  stage: build-project
+  stage: build
   script:
     - cd src
     - npm install
@@ -16,14 +16,44 @@ build_project:
     name: chromeExtension-dist
     expire_in: 2 day
     paths:
-      - dist
+      - src/dist
 
 install_dependent:
-  stage: install-dependent
-  dependencies:
-    - build_project
+  stage: build
   script:
     - ls -a
     - npm install --production
     - ls -a
+  artifacts:
+    name: node_modules
+    expire_in: 2 day
+    paths:
+      - src/node_modules
 
+variables: &VARIABLES
+  IMAGE_PER_BRANCH_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
+  DOCKER_DRIVER: overlay2
+  IMAGE_PER_BRANCH: $CI_REGISTRY_IMAGE/$CI_BUILD_REF_NAME:latest
+
+.docker: &DOCKER
+  image: docker:latest
+  services:
+    - name: docker:dind
+      command: ["--registry-mirror", "https://ixceb9no.mirror.aliyuncs.com"]
+  variables: &VARIABLES
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  tags:
+    - docker
+  except:
+    - tags
+
+docker_build:
+  <<: *DOCKER
+  stage: docker_build
+  script:
+    - echo $IMAGE_PER_BRANCH_COMMIT
+    - docker pull $IMAGE_PER_BRANCH || true
+    - docker build --pull --cache-from $IMAGE_PER_BRANCH -t $IMAGE_PER_BRANCH_COMMIT -t $IMAGE_PER_BRANCH --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f Dockerfile .
+    - docker push $IMAGE_PER_BRANCH_COMMIT
+    - docker push $IMAGE_PER_BRANCH
