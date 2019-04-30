@@ -21,11 +21,12 @@ build_project:
 install_dependent:
   stage: build
   script:
+    - cd src
     - ls -a
     - npm install --production
     - ls -a
   artifacts:
-    name: node_modules
+    name: node-modules
     expire_in: 2 day
     paths:
       - src/node_modules
