@@ -1,7 +1,8 @@
 image: node:10
 
 stages:
-  - build
+  - build-project
+  - install-dependent
 
 build_project:
   stage: build
@@ -12,12 +13,15 @@ build_project:
     - rm -rf chrome-extension
     - rm -rf node_modules
   artifacts:
+    name: chromeExtension-dist
     expire_in: 2 day
     paths:
-    - dist
+      - dist
 
 install_dependent:
-  stage: build
+  stage: install-dependent
+  dependencies:
+    - chromeExtension-dist
   script:
     - ls -a
     - npm install --production
