@@ -6,4 +6,4 @@ stages:
 build_project:
   stage: build
   script:
-  - la
+  - ls -a
