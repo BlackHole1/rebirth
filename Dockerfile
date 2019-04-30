@@ -9,7 +9,7 @@ RUN apt-get update -yq
 
 # 设置时区
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get install -yq tzdata
+RUN apt-get install -yq tzdata --fix-missing
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
@@ -27,7 +27,7 @@ RUN apt-get install -yq \
   libatk-bridge2.0-0 \
   libgtk-3-0 \
   libnss3 \
-  libxss1
+  libxss1 --fix-missing
 
 # 安装chrome浏览器
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
