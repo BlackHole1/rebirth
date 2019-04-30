@@ -21,7 +21,7 @@ build_project:
 install_dependent:
   stage: install-dependent
   dependencies:
-    - chromeExtension-dist
+    - build_project
   script:
     - ls -a
     - npm install --production
