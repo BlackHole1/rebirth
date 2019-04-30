@@ -12,8 +12,6 @@ build_project:
   - rm -rf chrome-extension
   - rm -rf node_modules
   artifacts:
-    name: chromeExtension-dist
-    untracked: true
     expire_in: 2 day
     paths:
     - dist
@@ -21,7 +19,7 @@ build_project:
 install_dependent:
   stage: build
   dependencies:
-  - chromeExtension-dist
+  - build_project
   script:
   - ls -a
   - npm install --production
