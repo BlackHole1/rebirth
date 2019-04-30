@@ -5,7 +5,7 @@ stages:
   - install-dependent
 
 build_project:
-  stage: build
+  stage: build-project
   script:
     - cd src
     - npm install
