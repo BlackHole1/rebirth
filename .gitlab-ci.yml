@@ -1,17 +1,16 @@
 image: node:10
 
 stages:
-  - build
-  - docker_build
+  - build_project
+  - build_image
+  - k8s_deploy
 
 build_project:
-  stage: build
+  stage: build_project
   script:
     - cd src
     - npm install
     - npm run build
-    - rm -rf chrome-extension
-    - rm -rf node_modules
   artifacts:
     name: chromeExtension-dist
     expire_in: 2 day
@@ -19,7 +18,7 @@ build_project:
       - src/dist
 
 install_dependent:
-  stage: build
+  stage: build_project
   script:
     - cd src
     - ls -a
@@ -31,7 +30,7 @@ install_dependent:
     paths:
       - src/node_modules
 
-variables: &VARIABLES
+variables:
   IMAGE_PER_BRANCH_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
   DOCKER_DRIVER: overlay2
   IMAGE_PER_BRANCH: $CI_REGISTRY_IMAGE/$CI_BUILD_REF_NAME:latest
@@ -41,11 +40,9 @@ variables: &VARIABLES
   services:
     - name: docker:dind
       command: ["--registry-mirror", "https://ixceb9no.mirror.aliyuncs.com"]
-  variables: &VARIABLES
   before_script:
     - echo "nameserver 114.114.114.114" >> /etc/resolv.conf
     - echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-    - cat /etc/resolv.conf
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   tags:
     - docker
@@ -54,16 +51,45 @@ variables: &VARIABLES
 
 docker_build:
   <<: *DOCKER
-  stage: docker_build
+  stage: build_image
   dependencies:
     - build_project
     - install_dependent
   script:
+    - rm -rf src/.eslintrc.js
+    - rm -rf src/chrome-extension
+    - rm -rf src/package-lock.json
+    - rm -rf src/tsconfig.json
+    - rm -rf src/webpack.config.js
     - echo $IMAGE_PER_BRANCH_COMMIT
     - docker pull $IMAGE_PER_BRANCH || true
     - docker build --pull --cache-from $IMAGE_PER_BRANCH -t $IMAGE_PER_BRANCH_COMMIT -t $IMAGE_PER_BRANCH --build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN -f Dockerfile .
-    - ls -a src/
-    - docker images
-#    - docker push $IMAGE_PER_BRANCH_COMMIT
-#    - docker push $IMAGE_PER_BRANCH
+    - docker push $IMAGE_PER_BRANCH_COMMIT
+    - docker push $IMAGE_PER_BRANCH
   retry: 2
+
+.deploy_base: &DEPLOY_BASE
+  stage: k8s_deploy
+  dependencies: []
+  image: registry-mirrors.saybot.net/zhuzhu/helm-kubectl:2.9.1
+  before_script:
+    - export RELEASE_NAME=${CI_PROJECT_NAME//_/-}-$CI_ENVIRONMENT_SLUG
+    - export HELM_ENVS=$(eval echo $(yq r helm/values.yaml env -tj | jq -r 'to_entries|.[]|"env.\(.key|sub("\\."; "_dot_"))=__string__${\(.key):-\(.value)}"' | tr "\n" ",") || true)
+  tags:
+    - docker
+
+deploy_k8s:
+  <<: *DEPLOY_BASE
+  script:
+    - echo $RELEASE_NAME
+    - echo $KUBE_CA_PEM
+    - echo $HELM_ENVS
+    - echo $KUBE_URL
+    - echo $KUBE_TOKEN
+    - echo $KUBE_NAMESPACE
+    - echo $CI_ENVIRONMENT_SLUG
+    - echo $CI_REGISTRY_IMAGE
+    - echo $CI_BUILD_REF_NAME
+    - echo $CI_BUILD_REF
+    - echo $REPLIC_COUNT
+    - echo $MYSQL_HOST
