@@ -3,9 +3,9 @@ FROM ubuntu:18.04
 MAINTAINER Black-Hole<158blackhole@gmail.com>
 
 # 设置源
-RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
-RUN apt-get clean
-RUN apt-get update -yq
+#RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+#RUN apt-get clean
+#RUN apt-get update -yq
 
 # 设置时区
 ENV DEBIAN_FRONTEND=noninteractive
