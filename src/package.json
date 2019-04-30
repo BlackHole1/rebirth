@@ -7,10 +7,8 @@
     "lib": "lib"
   },
   "scripts": {
-    "start:dev": "cross-env NODE_ENV=development node index.js",
-    "start:pro": "cross-env NODE_ENV=production node index.js",
-    "build:dev": "npm run eslint && cross-env NODE_ENV=development webpack --config webpack.config.js --watch",
-    "build:pro": "npm run eslint && cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "start": "npm run eslint && cross-env NODE_ENV=development webpack --config webpack.config.js --watch",
+    "build": "npm run eslint && cross-env NODE_ENV=production webpack --config webpack.config.js",
     "eslint": "eslint --fix --ext .ts chrome-extension"
   },
   "keywords": [

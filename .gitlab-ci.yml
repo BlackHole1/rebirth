@@ -6,4 +6,24 @@ stages:
 build_project:
   stage: build
   script:
+  - cd src
+  - npm install
+  - npm run build
+  - rm -rf chrome-extension
+  - rm -rf node_modules
+  artifacts:
+    name: chromeExtension-dist
+    untracked: true
+    expire_in: 2 day
+    paths:
+    - dist
+
+install_dependent:
+  stage: build
+  dependencies:
+  - build_project
+  script:
   - ls -a
+  - npm install --production
+  - ls -a
+
