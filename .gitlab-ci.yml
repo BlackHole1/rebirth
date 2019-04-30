@@ -78,7 +78,7 @@ docker_build:
   tags:
     - docker
 
-deploy_k8s:
+.deploy: &DEPLOY
   <<: *DEPLOY_BASE
   script:
     - echo $RELEASE_NAME
@@ -93,3 +93,8 @@ deploy_k8s:
     - echo $CI_BUILD_REF
     - echo $REPLIC_COUNT
     - echo $MYSQL_HOST
+
+deploy_alpha:
+  <<: *DEPLOY
+  environment:
+    name: alpha
