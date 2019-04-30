@@ -66,3 +66,4 @@ docker_build:
     - docker images
 #    - docker push $IMAGE_PER_BRANCH_COMMIT
 #    - docker push $IMAGE_PER_BRANCH
+  retry: 10
