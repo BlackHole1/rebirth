@@ -15,11 +15,7 @@ module.exports =  (req, res) => {
     '/completeRecordTask': (req, res) => {
       completeRecordTask(req, res);
     },
-    '/live': (req, res) => {
-      res.writeHead(200, CONTENTTYPE_TEXT);
-      res.end('');
-    },
-    '/health': (req, res) => {
+    '/liveness': (req, res) => {
       const statusCode = servicesStatus.isNormal ? 200 : 500;
       res.writeHead(statusCode, CONTENTTYPE_TEXT);
       res.end('');

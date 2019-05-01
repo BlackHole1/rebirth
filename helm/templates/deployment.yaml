@@ -5,8 +5,8 @@ metadata:
   labels:
     release: {{ .Release.Name }}
     appName: rebirth
+    app: {{ .Values.environment }}
   annotations:
-    chartVersion: {{ .Chart.version }}
     revision: {{ .Release.Revision }}
     isUpgrade: {{ .Release.IsUpgrade }}
     isInstall: {{ .Release.IsInstall }}
@@ -20,7 +20,19 @@ spec:
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
-      -
-        name: rebirth
+      - name: rebirth
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: IfNotPresent
+        env:
+        {{- range $key, $value := .Values.env }}
+          - name: {{ $key }}
+            value: {{ $value | replace "__string__" "" |  quote }}
+        {{- end }}
+        livenessProbe:
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          httpGet:
+            port: 80
+            path: /liveness
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
