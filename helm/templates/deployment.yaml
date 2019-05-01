@@ -6,7 +6,6 @@ metadata:
     release: {{ .Release.Name }}
     appName: rebirth
     app: {{ .Values.environment }}
-    revision: {{ .Release.Revision | toString }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
