@@ -66,6 +66,7 @@ docker_build:
     - kubectl config use-context default-system
     - helm ls --tiller-namespace $KUBE_NAMESPACE
     - helm delete --tiller-namespace $KUBE_NAMESPACE rebirth-alpha
+    - helm del --purge rebirth-alpha
     - export DEPLOYS=$(helm ls --tiller-namespace $KUBE_NAMESPACE | grep $RELEASE_NAME | wc -l)
     - export HELM_ENVS=$(eval echo $(yq r helm/values.yaml env -tj | jq -r 'to_entries|.[]|"env.\(.key|sub("\\."; "_dot_"))=__string__${\(.key):-\(.value)}"' | tr "\n" ",") || true)
     - export HELM_ARGS="--namespace=$KUBE_NAMESPACE --tiller-namespace $KUBE_NAMESPACE -f helm/values.yaml --set ${HELM_ENVS}environment=$CI_ENVIRONMENT_SLUG,image.repository=$CI_REGISTRY_IMAGE/${CI_BUILD_REF_NAME},image.tag=$CI_BUILD_REF",replicaCount=${REPLICA_COUNT:-3}
