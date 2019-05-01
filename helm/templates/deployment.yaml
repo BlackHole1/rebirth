@@ -6,7 +6,6 @@ metadata:
     release: {{ .Release.Name }}
     appName: rebirth
     app: {{ .Values.environment }}
-  annotations:
     revision: {{ .Release.Revision }}
     isUpgrade: {{ .Release.IsUpgrade }}
     isInstall: {{ .Release.IsInstall }}
