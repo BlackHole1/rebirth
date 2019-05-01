@@ -9,6 +9,7 @@ const completeRecordTask = (req, res) => {
   mysqlService.getConnection()
     .then(async conn => {
       const result = await conn.query(`DELETE FROM ${MYSQL_TABLE} WHERE hash=?`, [ hash ]);
+      conn.release();
       recordTasks.completeTask = hash;
       res.sendJson(result);
     })

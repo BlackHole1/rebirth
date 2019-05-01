@@ -13,5 +13,7 @@ export const getRecordTasks = (num: number) => {
 // 完成录制
 export const completeRecordTask = (hash: string) => {
   fetch(`${SERVER_URL}/completeRecordTask?hash=${hash}`)
-    .catch(() => {});
+    .catch(e => {
+      console.error(e);
+    });
 };

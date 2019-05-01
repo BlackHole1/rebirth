@@ -23,6 +23,7 @@ const getRecord = (req, res) => {
         await conn.query(`UPDATE ${MYSQL_TABLE} SET isStart=true WHERE hash in (${hashList})`);
         recordTasks.setTask = data;
       }
+      conn.release();
       res.sendJson(data);
     })
     .catch(e => {
