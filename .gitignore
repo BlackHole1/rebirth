@@ -1,4 +1,6 @@
 /src/node_modules
 .idea
 .Ds_store
-/src/dist
+/src/dist/*
+!/src/dist/key.pem
+!/src/dist/manifest.json
