@@ -25,6 +25,7 @@ install_dependence:
   artifacts:
     name: node-modules
     expire_in: 2 day
+    untracked: true
     paths:
       - src/node_modules
 
