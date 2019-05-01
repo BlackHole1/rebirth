@@ -50,7 +50,6 @@ WORKDIR /etc/www
 # 配置开发环境
 RUN npm install -g node-gyp
 COPY src ./
-RUN npm install --production
 
 # 容器运行启动脚本
 COPY entrypoint.sh ./
