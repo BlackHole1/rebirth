@@ -65,7 +65,6 @@ docker_build:
     - kubectl config set-context default-system --cluster=default-cluster --user=sa-deployment --namespace $KUBE_NAMESPACE
     - kubectl config use-context default-system
     - helm ls --tiller-namespace $KUBE_NAMESPACE
-    - helm delete --tiller-namespace $KUBE_NAMESPACE rebirth-alpha
     - helm del --purge rebirth-alpha
     - export DEPLOYS=$(helm ls --tiller-namespace $KUBE_NAMESPACE | grep $RELEASE_NAME | wc -l)
     - export HELM_ENVS=$(eval echo $(yq r helm/values.yaml env -tj | jq -r 'to_entries|.[]|"env.\(.key|sub("\\."; "_dot_"))=__string__${\(.key):-\(.value)}"' | tr "\n" ",") || true)
