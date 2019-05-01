@@ -1,4 +1,4 @@
-replicaCount: 10
+replicaCount: 3
 terminationGracePeriodSeconds: 60
 image:
   repository: rebirth
