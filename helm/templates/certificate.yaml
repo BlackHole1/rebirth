@@ -9,11 +9,9 @@ spec:
     commonName: {{ .Values.ingress.hosts | first }}
     secretName: cert-{{ template "helm.fullname" . }}
     dnsNames:
-    {{- range $host := .Values.ingress.hosts}}
-    {{- if hasSuffix ".saybot.net" $host }}
-    - {{ $host }}
-    {{- end -}}
-    {{- end -}}
+    {{- range $host := .Values.ingress.hosts }}
+      - {{ $host }}
+    {{- end }}
     acme:
       config:
         - dns01:
