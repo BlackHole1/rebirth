@@ -24,3 +24,11 @@ spec:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
     {{- end -}}
+  tls:
+    - hosts:
+      {{- range $host := .Values.ingress.hosts }}
+      {{- if hasSuffix ".saybot.net" $host }}
+      - {{ $host }}
+      {{- end }}
+      {{- end }}
+      secretName: cert-{{ template "helm.fullname" . }}

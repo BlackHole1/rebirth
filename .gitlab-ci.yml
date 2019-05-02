@@ -92,4 +92,4 @@ deploy_alpha:
   <<: *DEPLOY
   environment:
     name: alpha
-    url: http://rebirth.alpha.saybot.net
+    url: https://rebirth.alpha.saybot.net
