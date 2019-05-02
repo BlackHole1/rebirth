@@ -95,12 +95,6 @@ deploy_alpha:
   environment:
     name: alpha
     url: https://rebirth.alpha.saybot.net
-
-deploy_review:
-  <<: *DEPLOY
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    url: https://rebirth.$CI_ENVIRONMENT_SLUG.dev.saybot.net
     on_stop: stop_review
   except:
     - master
