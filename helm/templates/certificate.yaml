@@ -12,8 +12,8 @@ spec:
     {{- range $host := .Values.ingress.hosts}}
     {{- if hasSuffix ".saybot.net" $host }}
     - {{ $host }}
-    {{- end }}
-    {{- end }}
+    {{- end -}}
+    {{- end -}}
     acme:
       config:
         - dns01:
