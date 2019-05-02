@@ -27,8 +27,6 @@ spec:
   tls:
     - hosts:
       {{- range $host := .Values.ingress.hosts }}
-      {{- if hasSuffix ".saybot.net" $host }}
-      - {{ $host }}
-      {{- end }}
+        - {{ $host }}
       {{- end }}
       secretName: cert-{{ template "helm.fullname" . }}
