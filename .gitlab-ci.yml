@@ -104,7 +104,7 @@ deploy_alpha:
 deploy_beta:
   <<: *DEPLOY
   environment:
-    name: alpha
+    name: beta
     url: https://rebirth.beta.saybot.net
     on_stop: stop_beta
   only:
@@ -122,7 +122,7 @@ deploy_staging:
 deploy_production:
   <<: *DEPLOY
   environment:
-    name: $CI_ENVIRONMENT_SLUG
+    name: production
     url: https://rebirth.production.saybot.net
   only:
     - master
