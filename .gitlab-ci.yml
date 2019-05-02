@@ -108,5 +108,5 @@ stop_review:
     - if [ $DEPLOYS -ne 0 ]; then helm del --purge $RELEASE_NAME --tiller-namespace $KUBE_NAMESPACE ; fi
   when: manual
   environment:
-    name: review/$CI_COMMIT_REF_NAME
+    name: $CI_ENVIRONMENT_SLUG
     action: stop
