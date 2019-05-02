@@ -97,9 +97,39 @@ deploy_alpha:
     url: https://rebirth.alpha.saybot.net
     on_stop: stop_review
   except:
+    - beta
+    - staging
     - master
 
-stop_review:
+deploy_beta:
+  <<: *DEPLOY
+  environment:
+    name: alpha
+    url: https://rebirth.beta.saybot.net
+    on_stop: stop_review
+  only:
+    - beta
+
+deploy_staging:
+  <<: *DEPLOY
+  environment:
+    name: staging
+    url: https://rebirth.staging.saybot.net
+    on_stop: stop_review
+  only:
+    - beta
+
+deploy_production:
+  <<: *DEPLOY
+  environment:
+    name: $CI_ENVIRONMENT_SLUG
+    url: https://rebirth.production.saybot.net
+  only:
+    - master
+  tags:
+    - production
+
+.stop: &STOP
   <<: *DEPLOY_BASE
   variables:
     <<: *DEPLOY_BASE_VARIABLES
@@ -107,6 +137,21 @@ stop_review:
   script:
     - if [ $DEPLOYS -ne 0 ]; then helm del --purge $RELEASE_NAME --tiller-namespace $KUBE_NAMESPACE ; fi
   when: manual
+
+stop_alpha:
+  <<: *STOP
   environment:
     name: alpha
+    action: stop
+
+stop_beta:
+  <<: *STOP
+  environment:
+    name: beta
+    action: stop
+
+stop_staging:
+  <<: *STOP
+  environment:
+    name: staging
     action: stop
