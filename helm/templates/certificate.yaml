@@ -14,8 +14,8 @@ spec:
   {{- end }}
   acme:
     config:
-      - dns01:
-          provider: dnspod
+    - dns01:
+        provider: dnspod
       domains:
       {{- range $host := .Values.ingress.hosts }}
       - {{ $host }}
