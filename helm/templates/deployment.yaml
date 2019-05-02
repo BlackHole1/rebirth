@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: app: {{ template "helm.fullname" . }}
+  name: {{ template "helm.fullname" . }}
   labels:
     release: {{ .Release.Name }}
     appName: rebirth
