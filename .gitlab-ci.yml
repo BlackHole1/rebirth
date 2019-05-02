@@ -57,6 +57,8 @@ docker_build:
   stage: k8s_deploy
   dependencies: []
   image: registry-mirrors.saybot.net/zhuzhu/helm-kubectl:2.9.1
+  variables: &DEPLOY_BASE_VARIABLES
+    RELEASE_VERSION: $CI_PROJECT_NAME-$CI_BUILD_REF
   before_script:
     - export RELEASE_NAME=${CI_PROJECT_NAME//_/-}-$CI_ENVIRONMENT_SLUG
     - echo "$KUBE_CA_PEM" > kube_ca.pem
@@ -94,3 +96,26 @@ deploy_alpha:
   environment:
     name: alpha
     url: https://rebirth.alpha.saybot.net
+
+deploy_review:
+  <<: *DEPLOY
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://rebirth.$CI_ENVIRONMENT_SLUG.dev.saybot.net
+    on_stop: stop_review
+  only:
+    - k8s-ci
+
+stop_review:
+  <<: *DEPLOY_BASE
+  variables:
+    <<: *DEPLOY_BASE_VARIABLES
+    GIT_STRATEGY: none
+  script:
+    - if [ $DEPLOYS -ne 0 ]; then helm del --purge $RELEASE_NAME --tiller-namespace $KUBE_NAMESPACE ; fi
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  only:
+    - k8s-ci
