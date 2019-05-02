@@ -1,0 +1,25 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ template "helm.fullname" . }}
+spec:
+  issuerRef:
+    kind: ClusterIssuer
+    name: dev-issuer
+    commonName: {{ .Values.ingress.hosts | first }}
+    secretName: cert-{{ template "helm.fullname" . }}
+    dnsNames:
+    {{- range $host := .Values.ingress.hosts}}
+    {{- if hasSuffix ".saybot.net" $host }}
+    - {{ $host }}
+    {{- end }}
+    {{- end }}
+    acme:
+      config:
+        - dns01:
+            provider: dnspod
+        domains:
+        {{- range $host := .Values.ingress.hosts}}
+        - {{ $host }}
+        {{- end }}
+
