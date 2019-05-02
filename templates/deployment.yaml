@@ -1,11 +1,11 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: rebirth
+  name: app: {{ template "helm.fullname" . }}
   labels:
     release: {{ .Release.Name }}
     appName: rebirth
-    app: {{ .Values.environment }}
+    app: {{ template "helm.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -13,6 +13,7 @@ spec:
       labels:
         release: {{ .Release.Name }}
         appName: rebirth
+        app: {{ template "helm.name" . }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       imagePullSecrets:
@@ -21,6 +22,8 @@ spec:
       - name: rebirth
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: IfNotPresent
+        ports:
+         - containerPort: {{ .Values.service.internalPort }}
         env:
         {{- range $key, $value := .Values.env }}
           - name: {{ $key }}

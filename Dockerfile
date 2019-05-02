@@ -56,4 +56,6 @@ RUN npm install --production
 COPY entrypoint.sh ./
 RUN chmod +x ./entrypoint.sh
 
+EXPOSE 80
+
 ENTRYPOINT ["/etc/www/entrypoint.sh"]

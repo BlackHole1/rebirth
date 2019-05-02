@@ -1,0 +1,41 @@
+# deployment资源所需变量
+replicaCount: 3
+terminationGracePeriodSeconds: 60
+image:
+  repository: aoc/rebirth
+  tag: latest
+resources:
+  requests:
+    cpu: 1000m
+    memory: 1024Mi
+  limits:
+    cpu: 2000m
+    memory: 2048Mi
+
+# service资源所需变量
+service:
+  name: rebirth
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 80
+
+# ingress资源所需变量
+ingress:
+  hosts:
+    - rebirth
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/ssl-redirect: "false"
+
+# gitlab-ci所需变量
+environment: ""
+
+# 项目所需环境变量
+env: &ENV
+  MYSQL_HOST: ""
+  MYSQL_PORT: ""
+  MYSQL_USERNAME: ""
+  MYSQL_PASSWORD: ""
+  MYSQL_DATABASE: ""
+  MYSQL_TABLE: ""
