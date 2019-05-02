@@ -6,18 +6,18 @@ spec:
   issuerRef:
     kind: ClusterIssuer
     name: dev-issuer
-    commonName: {{ .Values.ingress.hosts | first }}
-    secretName: cert-{{ template "helm.fullname" . }}
-    dnsNames:
-    {{- range $host := .Values.ingress.hosts }}
+  commonName: {{ .Values.ingress.hosts | first }}
+  secretName: cert-{{ template "helm.fullname" . }}
+  dnsNames:
+  {{- range $host := .Values.ingress.hosts }}
+    - {{ $host }}
+  {{- end }}
+  acme:
+    config:
+      - dns01:
+          provider: dnspod
+      domains:
+      {{- range $host := .Values.ingress.hosts }}
       - {{ $host }}
-    {{- end }}
-    acme:
-      config:
-        - dns01:
-            provider: dnspod
-        domains:
-        {{- range $host := .Values.ingress.hosts}}
-        - {{ $host }}
-        {{- end }}
+      {{- end }}
 
