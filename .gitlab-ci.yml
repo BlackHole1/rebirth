@@ -74,6 +74,7 @@ docker_build:
 .deploy: &DEPLOY
   <<: *DEPLOY_BASE
   script:
+    - helm del --purge $RELEASE_NAME --tiller-namespace $KUBE_NAMESPACE ;
     - if [ $CI_ENVIRONMENT_SLUG == 'staging' ]; then export HELM_ARGS="$HELM_ARGS,ingress.annotations.kubernetes\.io/ingress\.class=staging-nginx"; fi
     - if [ $DEPLOYS -eq 0 ]; then helm install $HELM_ARGS --name=$RELEASE_NAME helm; else helm upgrade $HELM_ARGS $RELEASE_NAME helm; fi
     - echo $RELEASE_NAME

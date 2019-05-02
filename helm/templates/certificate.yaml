@@ -20,4 +20,3 @@ spec:
       {{- range $host := .Values.ingress.hosts }}
       - {{ $host }}
       {{- end }}
-
