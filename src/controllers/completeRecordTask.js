@@ -11,7 +11,11 @@ const completeRecordTask = (req, res) => {
       const result = await conn.query(`DELETE FROM ${MYSQL_TABLE} WHERE hash=?`, [ hash ]);
       conn.release();
       recordTasks.completeTask = hash;
-      res.sendJson('completeRecordTask', result);
+
+      res.sendJson(result, 'completeRecordTask', {
+        hash: hash,
+        sql: `DELETE FROM ${MYSQL_TABLE} WHERE hash=${hash}`
+      });
     })
     .catch(e => {
       servicesStatus.setMysqlError = true;

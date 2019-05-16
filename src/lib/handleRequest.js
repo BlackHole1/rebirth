@@ -9,13 +9,18 @@ module.exports = (req, res) => {
   req.pathname = pathname;
   req.query = paramsToObj(query);
 
-  res.sendJson = (desc, json) => {
+  res.sendJson = (desc, json, info) => {
     const result = ToString(json);
     res.writeHead(200, CONTENTTYPE_JSON);
     res.end(result);
 
     console.log(`=============${desc}=============`);
     console.log(result);
+
+    if (info !== undefined) {
+      console.log(`=============${desc} info=============`);
+      console.log(ToString(info));
+    }
   };
 
   res.sendError = (message, error, details) => {
