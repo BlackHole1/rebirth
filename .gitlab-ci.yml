@@ -96,10 +96,8 @@ deploy_alpha:
     name: alpha
     url: https://rebirth.alpha.saybot.net
     on_stop: stop_alpha
-  except:
-    - beta
-    - staging
-    - master
+  only:
+    - dev
 
 deploy_beta:
   <<: *DEPLOY
