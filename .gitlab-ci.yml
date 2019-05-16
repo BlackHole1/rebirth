@@ -21,21 +21,29 @@ build_alpha_project:
   <<: *BUILD_PROJECT
   environment:
     name: alpha
+  only:
+    - alpha
 
 build_beta_project:
   <<: *BUILD_PROJECT
   environment:
     name: beta
+  only:
+    - beta
 
 build_staging_project:
   <<: *BUILD_PROJECT
   environment:
     name: staging
+  only:
+    - staging
 
 build_production_project:
   <<: *BUILD_PROJECT
   environment:
     name: production
+  only:
+    - production
 
 variables:
   IMAGE_PER_BRANCH_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
@@ -56,11 +64,9 @@ variables:
   except:
     - tags
 
-docker_build:
+.docker_build: &DOCKER_BUILD
   <<: *DOCKER
   stage: build_image
-  dependencies:
-    - build_project
   script:
     - rm -rf src/.eslintrc.js
     - rm -rf src/chrome-extension
@@ -72,6 +78,42 @@ docker_build:
     - docker push $IMAGE_PER_BRANCH_COMMIT
     - docker push $IMAGE_PER_BRANCH
   retry: 2
+
+docker_build_alpha:
+  <<: *DOCKER_BUILD
+  dependencies:
+    - build_alpha_project
+  environment:
+    name: alpha
+  only:
+    - alpha
+
+docker_build_beta:
+  <<: *DOCKER_BUILD
+  dependencies:
+    - build_beta_project
+  environment:
+    name: beta
+  only:
+    - beta
+
+docker_build_staging:
+  <<: *DOCKER_BUILD
+  dependencies:
+    - build_staging_project
+  environment:
+    name: staging
+  only:
+    - staging
+
+docker_build_production:
+  <<: *DOCKER_BUILD
+  dependencies:
+    - build_production_project
+  environment:
+    name: production
+  only:
+    - production
 
 .deploy_base: &DEPLOY_BASE
   stage: k8s_deploy
