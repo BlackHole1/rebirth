@@ -115,7 +115,7 @@ deploy_staging:
     url: https://rebirth.staging.saybot.net
     on_stop: stop_staging
   only:
-    - beta
+    - staging
 
 deploy_production:
   <<: *DEPLOY
@@ -141,15 +141,21 @@ stop_alpha:
   environment:
     name: alpha
     action: stop
+  only:
+    - alpha
 
 stop_beta:
   <<: *STOP
   environment:
     name: beta
     action: stop
+  only:
+    - beta
 
 stop_staging:
   <<: *STOP
   environment:
     name: staging
     action: stop
+  only:
+    - staging
