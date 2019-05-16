@@ -26,7 +26,6 @@ module.exports = {
   ],
   devtool: (env === 'production') ? 'none' : 'inline-source-map',
   module: {
-    noParse: [/aws-sdk/],
     rules: [
       {
         test: /\.ts$/,
