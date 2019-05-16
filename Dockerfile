@@ -14,29 +14,34 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 
-# 安装环境以及基本依赖
-RUN apt-get install -yq git xvfb nodejs npm lsof --fix-missing
-RUN apt-get install -yq \
-  wget \
-  locales \
-  libx11-xcb1 \
-  libxrandr2 \
-  libasound2 \
-  libpangocairo-1.0-0 \
-  libatk1.0-0 \
-  libatk-bridge2.0-0 \
-  libgtk-3-0 \
-  libnss3 \
-  libxss1 --fix-missing
+# 安装环境
+RUN apt-get install -yq git
+RUN apt-get install -yq xvfb
+RUN apt-get install -yq nodejs
+RUN apt-get install -yq npm
+RUN apt-get install -yq lsof
+
+# 安装基本依赖
+RUN apt-get install -yq wget
+RUN apt-get install -yq locales
+RUN apt-get install -yq libx11-xcb1
+RUN apt-get install -yq libxrandr2
+RUN apt-get install -yq libasound2
+RUN apt-get install -yq libpangocairo-1.0-0
+RUN apt-get install -yq libatk1.0-0
+RUN apt-get install -yq libatk-bridge2.0-0
+RUN apt-get install -yq libgtk-3-0
+RUN apt-get install -yq libnss3
+RUN apt-get install -yq libxss1
 
 # 安装chrome浏览器
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
 RUN sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
 RUN apt-get update
-RUN apt-get -yq install google-chrome-stable
+RUN apt-get install -yq google-chrome-stable
 
 # 设置UTF-8
-RUN apt-get -yq install ttf-wqy-microhei ttf-wqy-zenhei
+RUN apt-get install -yq ttf-wqy-microhei ttf-wqy-zenhei
 RUN locale-gen zh_CN.UTF-8 \
   && dpkg-reconfigure locales
 RUN locale-gen zh_CN.UTF-8
