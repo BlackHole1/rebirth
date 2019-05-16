@@ -5,7 +5,7 @@ stages:
   - build_image
   - k8s_deploy
 
-build_project:
+.build_project: &BUILD_PROJECT
   stage: build_project
   script:
     - cd src
@@ -16,6 +16,26 @@ build_project:
     expire_in: 2 day
     paths:
       - src/dist
+
+build_alpha_project:
+  <<: *BUILD_PROJECT
+  environment:
+    name: alpha
+
+build_beta_project:
+  <<: *BUILD_PROJECT
+  environment:
+    name: beta
+
+build_staging_project:
+  <<: *BUILD_PROJECT
+  environment:
+    name: staging
+
+build_production_project:
+  <<: *BUILD_PROJECT
+  environment:
+    name: production
 
 variables:
   IMAGE_PER_BRANCH_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
