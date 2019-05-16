@@ -4,3 +4,5 @@
 /src/dist/*
 !/src/dist/key.pem
 !/src/dist/manifest.json
+!src/dist/aws-sdk.min.js
+!src/dist/background.html

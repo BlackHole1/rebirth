@@ -2,6 +2,7 @@ import tabs from './tabs';
 import recordingQueue from './recordingQueue';
 import { captureConfig, mediaRecorderOptions, blobOptions } from './config';
 import { completeRecordTask } from './ajax';
+import uploadWebmToS3 from './uploadWebmToS3';
 
 // 开始录屏
 const start = (id: number, filename: string): void => {
@@ -34,6 +35,7 @@ const start = (id: number, filename: string): void => {
 
     mediaRecorder.onstop = () => {
       const superBuffer = new Blob(recordedBlobs, blobOptions);
+      uploadWebmToS3(superBuffer, filename, tabs.getHash(id));
 
       const link = document.createElement('a');
       link.href = URL.createObjectURL(superBuffer);

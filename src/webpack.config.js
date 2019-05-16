@@ -16,11 +16,17 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      SERVER_URL: JSON.stringify('http://127.0.0.1')
+      SERVER_URL: JSON.stringify('http://127.0.0.1'),
+      UPLOAD_FAIL_RETRY_NUMBER: JSON.stringify(process.env.UPLOAD_FAIL_RETRY_NUMBER),
+      AWS_ACCESS_KEY_ID: JSON.stringify(process.env.AWS_ACCESS_KEY_ID),
+      AWS_SECRET_ACCESS_KEY: JSON.stringify(process.env.AWS_SECRET_ACCESS_KEY),
+      AWS_REGION: JSON.stringify(process.env.AWS_REGION),
+      AWS_BUCKET: JSON.stringify(process.env.AWS_BUCKET),
     })
   ],
   devtool: (env === 'production') ? 'none' : 'inline-source-map',
   module: {
+    noParse: [/aws-sdk/],
     rules: [
       {
         test: /\.ts$/,
