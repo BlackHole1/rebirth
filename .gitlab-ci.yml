@@ -22,7 +22,7 @@ build_alpha_project:
   environment:
     name: alpha
   only:
-    - alpha
+    - dev
 
 build_beta_project:
   <<: *BUILD_PROJECT
