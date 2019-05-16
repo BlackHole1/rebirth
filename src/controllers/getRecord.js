@@ -6,7 +6,7 @@ const { MYSQL_TABLE } = require('../lib/constants');
 const getRecord = (req, res) => {
   // 如果已经有服务挂了，则不要再返回录制任务了
   if (!servicesStatus.isNormal) {
-    res.sendJson([]);
+    res.sendJson('getRecord', []);
     return;
   }
 
@@ -24,7 +24,7 @@ const getRecord = (req, res) => {
         recordTasks.setTask = data;
       }
       conn.release();
-      res.sendJson(data);
+      res.sendJson('getRecord', data);
     })
     .catch(e => {
       servicesStatus.setMysqlError = true;

@@ -9,20 +9,28 @@ module.exports = (req, res) => {
   req.pathname = pathname;
   req.query = paramsToObj(query);
 
-  res.sendJson = json => {
+  res.sendJson = (desc, json) => {
     const result = ToString(json);
     res.writeHead(200, CONTENTTYPE_JSON);
     res.end(result);
+
+    console.log(`=============${desc}=============`);
+    console.log(result);
   };
 
   res.sendError = (message, error, details) => {
     servicesStatus.setMysqlError = true;
-    res.writeHead(500, CONTENTTYPE_JSON);
-    res.end(JSON.stringify({
+
+    const result = JSON.stringify({
       message,
       error: ToString(error),
       details: ToString(details)
-    }));
+    });
+    res.writeHead(500, CONTENTTYPE_JSON);
+    res.end(result);
+
+    console.log('-------------error-------------');
+    console.log(result);
   };
 
   routers(req, res);
