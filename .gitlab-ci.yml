@@ -86,7 +86,7 @@ docker_build_alpha:
   environment:
     name: alpha
   only:
-    - alpha
+    - dev
 
 docker_build_beta:
   <<: *DOCKER_BUILD
@@ -204,7 +204,7 @@ stop_alpha:
     name: alpha
     action: stop
   only:
-    - alpha
+    - dev
 
 stop_beta:
   <<: *STOP
