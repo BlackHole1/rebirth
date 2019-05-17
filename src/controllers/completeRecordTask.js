@@ -8,13 +8,13 @@ const completeRecordTask = (req, res) => {
   const { hash } = req.query;
   mysqlService.getConnection()
     .then(async conn => {
-      const result = await conn.query(`DELETE FROM ${MYSQL_TABLE} WHERE hash="${hash}"`);
+      const result = await conn.query(`DELETE FROM ${MYSQL_TABLE} WHERE hash=${hash}`);
       conn.release();
       recordTasks.completeTask = hash;
 
       res.sendJson(result, 'completeRecordTask', {
         hash: hash,
-        sql: `DELETE FROM ${MYSQL_TABLE} WHERE hash="${hash}"`
+        sql: `DELETE FROM ${MYSQL_TABLE} WHERE hash=${hash}`
       });
     })
     .catch(e => {
@@ -22,7 +22,7 @@ const completeRecordTask = (req, res) => {
       res.sendError(
         'delete fail',
         e,
-        `DELETE FROM ${MYSQL_TABLE} WHERE hash="${hash}"`
+        `DELETE FROM ${MYSQL_TABLE} WHERE hash=${hash}`
       );
     });
 };
