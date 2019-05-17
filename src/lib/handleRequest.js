@@ -9,7 +9,7 @@ module.exports = (req, res) => {
   req.pathname = pathname;
   req.query = paramsToObj(query);
 
-  res.sendJson = (desc, json, info) => {
+  res.sendJson = (json, desc, info) => {
     const result = ToString(json);
     res.writeHead(200, CONTENTTYPE_JSON);
     res.end(result);
