@@ -14,8 +14,10 @@ module.exports = (req, res) => {
     res.writeHead(200, CONTENTTYPE_JSON);
     res.end(result);
 
-    console.log(`=============${desc}=============`);
-    console.log(result);
+    if (desc !== undefined) {
+      console.log(`=============${desc}=============`);
+      console.log(result);
+    }
 
     if (info !== undefined) {
       console.log(`=============${desc} info=============`);
