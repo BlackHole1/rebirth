@@ -1,7 +1,7 @@
 const { parse } = require('url');
 const routers = require('./routers');
 const { CONTENTTYPE_JSON } = require('./constants');
-const { ToString, paramsToObj } = require('./utils');
+const { ToString, paramsToObj, log } = require('./utils');
 const servicesStatus = require('./servicesStatus');
 
 module.exports = (req, res) => {
@@ -15,13 +15,11 @@ module.exports = (req, res) => {
     res.end(result);
 
     if (desc !== undefined) {
-      console.log(`=============${desc}=============`);
-      console.log(result);
+      log(desc, result);
     }
 
     if (info !== undefined) {
-      console.log(`=============${desc} info=============`);
-      console.log(ToString(info));
+      log(`${desc} info`, info);
     }
   };
 
@@ -36,8 +34,7 @@ module.exports = (req, res) => {
     res.writeHead(500, CONTENTTYPE_JSON);
     res.end(result);
 
-    console.log('-------------error-------------');
-    console.log(result);
+    log('error', result);
   };
 
   routers(req, res);
