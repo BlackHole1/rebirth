@@ -16,8 +16,7 @@ export const captureConfig = {
 
 // mediaRecorder配置
 export const mediaRecorderOptions = {
-  videoBitsPerSecond: 2500000,
-  mimeType: 'video/webm;codecs=vp9'
+  mimeType: 'video/webm;codecs=vp8'
 };
 
 // Blob配置
