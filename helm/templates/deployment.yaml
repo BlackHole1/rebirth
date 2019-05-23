@@ -36,4 +36,9 @@ spec:
             port: 80
             path: /liveness
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+          limits:
+            cpu: 2000m
+            memory: 2048Mi

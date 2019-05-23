@@ -4,13 +4,6 @@ terminationGracePeriodSeconds: 60
 image:
   repository: aoc/rebirth
   tag: latest
-resources:
-  requests:
-    cpu: 1000m
-    memory: 1024Mi
-  limits:
-    cpu: 2000m
-    memory: 2048Mi
 
 # service资源所需变量
 service:
