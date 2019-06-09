@@ -1,4 +1,5 @@
 import { IS3UplodData } from '../typing/aws';
+import { completeRecordTask } from './ajax';
 
 AWS.config.update({
   accessKeyId: AWS_ACCESS_KEY_ID,
@@ -26,6 +27,7 @@ const uploadWebmToS3 = (blob: any, name: string, hash: string) => {
     ContentType: 'video/webm'
   }, (err: Error, data: IS3UplodData) => {
     if (!err) {
+      completeRecordTask(hash, data.Location);
       return;
     }
 

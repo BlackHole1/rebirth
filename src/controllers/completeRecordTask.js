@@ -3,18 +3,18 @@ const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
 const { MYSQL_TABLE } = require('../lib/constants');
 
-// 完成录制（删除数据）
+// 完成录制
 const completeRecordTask = (req, res) => {
-  const { hash } = req.query;
+  const { hash, s3URL } = req.query;
   mysqlService.getConnection()
     .then(async conn => {
-      const result = await conn.query(`DELETE FROM ${MYSQL_TABLE} WHERE hash=${hash}`);
+      const result = await conn.query(`UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE task_hash='${hash}' and merge_result_url is null`);
       conn.release();
       recordTasks.completeTask = hash;
 
       res.sendJson(result, 'completeRecordTask', {
         hash: hash,
-        sql: `DELETE FROM ${MYSQL_TABLE} WHERE hash=${hash}`
+        sql: `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE task_hash='${hash}' and merge_result_url is null`
       });
     })
     .catch(e => {
@@ -22,7 +22,7 @@ const completeRecordTask = (req, res) => {
       res.sendError(
         'delete fail',
         e,
-        `DELETE FROM ${MYSQL_TABLE} WHERE hash=${hash}`
+        `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE task_hash='${hash}' and merge_result_url is null`
       );
     });
 };

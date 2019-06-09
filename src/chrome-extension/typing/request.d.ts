@@ -1,5 +1,6 @@
 export type IRecord = {
-  url: string;
-  isStart: number;
-  hash: string;
+  material_url: string;
+  status: 'waiting' | 'recording' | 'record_complete' | 'aoc_consume';
+  task_hash: string;
+  merge_result_url: string;
 }[];
