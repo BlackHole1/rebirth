@@ -17,11 +17,11 @@ const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
 
       data.forEach(record => {
         chrome.tabs.create({
-          url: record.url
+          url: record.material_url
         }, tab => {
           const id = tab.id;
           tabs.setAction(id, 'waiting');
-          tabs.setHash(id, record.hash);
+          tabs.setHash(id, record.task_hash);
         });
       });
     })

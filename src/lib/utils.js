@@ -29,7 +29,7 @@ module.exports.log = (desc, info) => {
  *
  */`);
 };
-// 优化日志输出
+
 const isMac = type() === 'Darwin';
 
 module.exports.chromePath = isMac ? CHROME_PATH_MAC : CHROME_PATH_LINUX;
