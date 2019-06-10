@@ -14,7 +14,7 @@ const getRecord = (req, res) => {
 
   mysqlService.getConnection()
     .then(async conn => {
-      const result = await conn.query(`SELECT t.* FROM ${MYSQL_TABLE} t WHERE status='waiting' LIMIT ${num}`);
+      const result = await conn.query(`SELECT t.* FROM ${MYSQL_TABLE} t WHERE status='waiting' and deleted=0 LIMIT ${num}`);
       return [ result, conn ];
     })
     .then(async ([ data, conn ]) => {
