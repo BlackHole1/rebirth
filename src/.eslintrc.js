@@ -30,7 +30,6 @@ module.exports = {
     "no-regex-spaces": "error",  // 禁止正则表达式字面量中出现多个空格
     "no-return-await": "error",  // 禁用不必要的 return await
     "require-await": "error",  // 禁止使用不带 await 表达式的 async 函数
-    "camelcase": "error",  // 使用骆驼拼写法
     "no-const-assign": "error",  // 不允许改变用const声明的变量
     "no-duplicate-imports": "error",  // 禁止重复模块导入
     "prefer-const": [ "error", { "destructuring": "all", } ], //优先使用const

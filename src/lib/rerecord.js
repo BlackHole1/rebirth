@@ -7,11 +7,11 @@ module.exports = (cb) => {
 
   if (tasks.length === 0) return;
 
-  const hashList = tasks.map(task => `'${task.hash}'`).join();
+  const hashList = tasks.map(task => `'${task.task_hash}'`).join();
 
   mysqlService.getConnection()
     .then(async conn => {
-      await conn.query(`UPDATE ${MYSQL_TABLE} SET isStart=0 WHERE hash in (${hashList})`);
+      await conn.query(`UPDATE ${MYSQL_TABLE} SET status='waiting' WHERE task_hash in (${hashList})`);
       conn.release();
     })
     .catch(e => {
