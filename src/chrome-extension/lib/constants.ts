@@ -1,1 +1,1 @@
-export const RecordNumber = 10;
+export const RecordNumber = 3;
