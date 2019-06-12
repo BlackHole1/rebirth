@@ -2,6 +2,7 @@ import tabs from './tabs';
 import recordingQueue from './recordingQueue';
 import { captureConfig, mediaRecorderOptions, blobOptions } from './config';
 import uploadWebmToS3 from './uploadWebmToS3';
+import { recordFail } from './ajax';
 
 // 开始录屏
 const start = (id: number, filename: string): void => {
@@ -73,11 +74,19 @@ const stop = (id: number, mediaRecorder: MediaRecorder): void => {
   });
 };
 
+// 录制失败
+const fail = (id: number): void => {
+  recordFail(tabs.getHash(id));
+  // 失败者不配拥有姓名
+  tabs.deleteTab(id);
+};
+
 const actions: { [keys: string]: Function } = {
   start,
   pause,
   resume,
-  stop
+  stop,
+  fail
 };
 
 export default actions;

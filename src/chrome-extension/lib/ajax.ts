@@ -19,3 +19,11 @@ export const completeRecordTask = (hash: string, s3URL: string) => {
       console.error(e);
     });
 };
+
+// 录制失败
+export const recordFail = (hash: string) => {
+  fetch(`${SERVER_URL}/recordFail?hash=${hash}`)
+    .catch(e => {
+      console.error(e);
+    });
+};
