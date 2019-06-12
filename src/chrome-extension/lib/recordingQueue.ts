@@ -6,6 +6,11 @@ class RecordingQueue {
 
   enqueue (fun: Function) {
     this.queue.push(fun);
+
+    // 第一次加入队列时，自动运行
+    if (this.length() === 1) {
+      this.front()();
+    }
   }
 
   dequeue () {

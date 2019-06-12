@@ -17,10 +17,6 @@ class Tabs {
     return (this.getTab(id) && this.getTab(id).getHash) ? this.getTab(id).getHash : null;
   }
 
-  getAction (id: number) {
-    return (this.getTab(id) && this.getTab(id).action) ? this.getTab(id).action : null;
-  }
-
   getMediaRecorder (id: number) {
     return (this.getTab(id) && this.getTab(id).mediaRecorder) ? this.getTab(id).mediaRecorder : null;
   }
@@ -50,26 +46,6 @@ class Tabs {
       this.createTab(id);
     }
     this.tabs[id].mediaRecorder = mediaRecorder;
-  }
-
-  isWaiting (id: number) {
-    return this.getAction(id) === 'waiting';
-  }
-
-  isStart (id: number) {
-    return this.getAction(id) === 'start';
-  }
-
-  isPause (id: number) {
-    return this.getAction(id) === 'pause';
-  }
-
-  isResume (id: number) {
-    return this.getAction(id) === 'resume';
-  }
-
-  isStop (id: number) {
-    return this.getAction(id) === 'stop';
   }
 
   deleteTab (id: number) {

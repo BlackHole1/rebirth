@@ -2,6 +2,7 @@ const { CONTENTTYPE_TEXT } = require('./constants');
 const servicesStatus = require('./servicesStatus');
 const getRecord = require('../controllers/getRecord');
 const completeRecordTask = require('../controllers/completeRecordTask');
+const recordFail = require('../controllers/recordFail');
 
 module.exports =  (req, res) => {
   const router = {
@@ -14,6 +15,9 @@ module.exports =  (req, res) => {
     },
     '/completeRecordTask': (req, res) => {
       completeRecordTask(req, res);
+    },
+    '/recordFail': (req, res) => {
+      recordFail(req, res);
     },
     '/liveness': (req, res) => {
       const statusCode = servicesStatus.isNormal ? 200 : 500;
