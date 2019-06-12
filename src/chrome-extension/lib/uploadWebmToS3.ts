@@ -16,9 +16,9 @@ const S3 = new AWS.S3({
 
 const retryMap: { [key in string]: number } = {};
 
-const uploadWebmToS3 = (blob: any, name: string, hash: string) => {
+const uploadWebmToS3 = (blob: any, hash: string) => {
   const date = new Date();
-  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${name}.webm`;
+  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${hash}.webm`;
 
   S3.upload({
     Key: path,
@@ -38,7 +38,7 @@ const uploadWebmToS3 = (blob: any, name: string, hash: string) => {
     retryMap[hash] =+ 1;
 
     if (retryMap[hash] <= Number(UPLOAD_FAIL_RETRY_NUMBER)) {
-      uploadWebmToS3(blob, name, hash);
+      uploadWebmToS3(blob, name);
     }
   });
 };
