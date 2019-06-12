@@ -47,19 +47,17 @@ setTimeout(() => {
 // 监听网页消息
 chrome.runtime.onConnect.addListener(port => {
   port.onMessage.addListener((data: IData) => {
-    if ([ 'start', 'pause', 'resume', 'stop' ].includes(data.action)) {
+    if ([ 'start', 'pause', 'resume', 'stop', 'fail' ].includes(data.action)) {
       const fun = () => {
         const currentTabId = port.sender.tab.id;
         const lastParams = data.action === 'start' ? data.filename : tabs.getMediaRecorder(currentTabId);
         actions[data.action](currentTabId, lastParams);
       };
 
-      // 如果队列为空，则直接运行
-      if (recordingQueue.isEmpty()) {
-        fun();
-      } else {
-        // 加入录屏队列，等待上一次录屏开始后，在被运行
+      if (data.action === 'start') {
         recordingQueue.enqueue(fun);
+      } else {
+        fun();
       }
     }
   });

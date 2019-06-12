@@ -3,7 +3,7 @@ import { IAction } from './typing/rebirth';
 
 window.rebirth = Object.create(null);
 
-[ 'start', 'pause', 'resume', 'stop' ].forEach((m: IAction) => {
+[ 'start', 'pause', 'resume', 'stop', 'fail' ].forEach((m: IAction) => {
   window.rebirth[m] = (filename?: string) => {
     const msg: IData = {
       'action': m,

@@ -1,1 +1,1 @@
-export type IAction = 'waiting' | 'start' | 'pause' | 'resume' | 'stop';
+export type IAction = 'waiting' | 'start' | 'pause' | 'resume' | 'stop' | 'fail';
