@@ -5,7 +5,7 @@ import uploadWebmToS3 from './uploadWebmToS3';
 import { recordFail } from './ajax';
 
 // 开始录屏
-const start = (id: number, filename: string): void => {
+const start = (id: number): void => {
   tabs.setAction(id, 'start');
 
   // 切换标签到触发start动作的标签页，因为tabCapture.capture是在当前Tab触发
@@ -35,7 +35,7 @@ const start = (id: number, filename: string): void => {
 
     mediaRecorder.onstop = () => {
       const superBuffer = new Blob(recordedBlobs, blobOptions);
-      uploadWebmToS3(superBuffer, filename, tabs.getHash(id));
+      uploadWebmToS3(superBuffer, tabs.getHash(id));
       // const link = document.createElement('a');
       // link.href = URL.createObjectURL(superBuffer);
       // link.setAttribute('download', `${filename}.webm`);
@@ -77,6 +77,10 @@ const stop = (id: number, mediaRecorder: MediaRecorder): void => {
 // 录制失败
 const fail = (id: number): void => {
   recordFail(tabs.getHash(id));
+  setTimeout(() => {
+    chrome.tabs.remove(id);
+  }, 2000);
+
   // 失败者不配拥有姓名
   tabs.deleteTab(id);
 };
