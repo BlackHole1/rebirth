@@ -1,6 +1,6 @@
 interface Window {
   rebirth: {
-    [key: string]: (filename?: string) => void;
+    [key: string]: () => void;
   };
 }
 

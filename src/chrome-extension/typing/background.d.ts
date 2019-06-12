@@ -10,5 +10,4 @@ export type ITabs = {
 
 export interface IData {
   action: IAction;
-  filename?: string;
 }
