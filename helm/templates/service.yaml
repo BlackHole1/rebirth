@@ -6,6 +6,9 @@ metadata:
     release: {{ .Release.Name }}
     appName: rebirth
     app: {{ template "helm.name" . }}
+  annotations:
+    app.gitlab.com/env: {{ .Values.env.CI_ENVIRONMENT_SLUG }}
+    app.gitlab.com/app: {{ .Values.env.CI_PROJECT_PATH_SLUG }}
 spec:
   type: {{ .Values.service.type }}
   ports:

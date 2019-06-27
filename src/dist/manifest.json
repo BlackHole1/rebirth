@@ -19,6 +19,7 @@
     "tabCapture",
     "activeTab",
     "processes",
+    "downloads",
     "http://*/",
     "https://*/",
     "<all_urls>"

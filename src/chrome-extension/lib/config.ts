@@ -20,7 +20,7 @@ export const mediaRecorderOptions = {
   mimeType: 'video/webm;codecs=vp9'
 };
 
-// Blob配置
+// Blob配置（虽然可以使用video/mp4，但是视频的质量极差）
 export const blobOptions = {
   type: 'video/webm'
 };

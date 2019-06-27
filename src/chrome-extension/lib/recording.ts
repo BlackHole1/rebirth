@@ -1,8 +1,8 @@
 import tabs from './tabs';
 import recordingQueue from './recordingQueue';
 import { captureConfig, mediaRecorderOptions, blobOptions } from './config';
-import uploadWebmToS3 from './uploadWebmToS3';
-import { recordFail } from './ajax';
+import { completeRecordTask, recordFail } from './ajax';
+import { fileDownloadDone } from './utils';
 
 // 开始录屏
 const start = (id: number): void => {
@@ -34,12 +34,21 @@ const start = (id: number): void => {
     };
 
     mediaRecorder.onstop = () => {
+      const hash = tabs.getHash(id);
       const superBuffer = new Blob(recordedBlobs, blobOptions);
-      uploadWebmToS3(superBuffer, tabs.getHash(id));
-      // const link = document.createElement('a');
-      // link.href = URL.createObjectURL(superBuffer);
-      // link.setAttribute('download', `${filename}.webm`);
-      // link.click();
+
+      // 不用chrome.downloads.download来下载，是因为这个API存在BUG，对Blob支持不太好
+      // 详情见：https://bugs.chromium.org/p/chromium/issues/detail?id=892133#makechanges
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(superBuffer);
+      link.setAttribute('download', `${hash}.webm`);
+      link.click();
+
+      fileDownloadDone(hash)
+        .then(() => {
+          completeRecordTask(hash);
+        })
+        .catch(() => {});
 
       setTimeout(() => {
         chrome.tabs.remove(id);

@@ -20,6 +20,8 @@ RUN apt-get install -yq xvfb
 RUN apt-get install -yq nodejs
 RUN apt-get install -yq npm
 RUN apt-get install -yq lsof
+RUN apt-get install -yq yasm
+RUN apt-get install -yq ffmpeg
 
 # 安装基本依赖
 RUN apt-get install -yq wget

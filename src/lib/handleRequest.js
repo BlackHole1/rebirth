@@ -14,27 +14,33 @@ module.exports = (req, res) => {
     res.writeHead(200, CONTENTTYPE_JSON);
     res.end(result);
 
-    if (desc !== undefined) {
-      log(desc, result);
+    if (desc !== undefined && info === undefined) {
+      log(desc, {
+        json
+      });
     }
 
     if (info !== undefined) {
-      log(`${desc} info`, info);
+      log(`${desc} info`, {
+        json,
+        info
+      });
     }
   };
 
   res.sendError = (message, error, details) => {
     servicesStatus.setMysqlError = true;
 
-    const result = JSON.stringify({
+    const data = {
       message,
       error: ToString(error),
       details: ToString(details)
-    });
+    };
+    const result = JSON.stringify(data);
     res.writeHead(500, CONTENTTYPE_JSON);
     res.end(result);
 
-    log('error', result);
+    log('error', data);
   };
 
   routers(req, res);

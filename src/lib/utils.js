@@ -1,11 +1,20 @@
-const { type } = require('os');
-const { CHROME_PATH_LINUX, CHROME_PATH_MAC, USER_DATA_DIR_MAC, USER_DATA_DIR_LINUX } = require('./constants');
+const { type, homedir } = require('os');
+const ffmpeg = require('fluent-ffmpeg');
+const s3 = require('@auth0/s3');
+const {
+  CHROME_PATH_LINUX,
+  CHROME_PATH_MAC,
+  USER_DATA_DIR_MAC,
+  USER_DATA_DIR_LINUX,
+  AWS_ACCESS_KEY_ID,
+  AWS_BUCKET,
+  AWS_REGION,
+  AWS_SECRET_ACCESS_KEY,
+} = require('./constants');
 
 const ToString = val => typeof val === 'string' ? val : JSON.stringify(val);
 
-module.exports.ToString = ToString;
-
-module.exports.paramsToObj = params => {
+const paramsToObj = params => {
   if (!params) return {};
 
   const result = {};
@@ -20,18 +29,98 @@ module.exports.paramsToObj = params => {
   return result;
 };
 
-module.exports.log = (desc, info) => {
-  console.log(`
-/**
- * ${desc}
- *
- * ${ToString(info)}
- *
- */`);
+const log = (desc, info) => {
+  console.log(JSON.stringify({
+    desc,
+    ...info
+  }, null, '  '), '\n');
 };
+
+const webmToMP4 = hash => new Promise((resolve, reject) => {
+  const baseFile = `${homedir}/Downloads/${hash}`;
+  const inputFile = baseFile + '.webm';
+  const outputFile = baseFile + '.mp4';
+
+  ffmpeg(inputFile)
+    .on('start', function(commandLine) {
+      log('ffmpeg start', {
+        'ffmpeg command': commandLine
+      });
+    })
+    .on('error', function(err) {
+      log('ffmpeg error', {
+        inputFile,
+        outputFile,
+        err: err.message
+      });
+      reject();
+    })
+    .on('end', function() {
+      log('ffmpeg end', {
+        inputFile,
+        outputFile,
+      });
+      resolve(outputFile);
+    })
+    .outputOptions([  // 参数的前后不要加空格，否则会报错，且错误信息不会出现详细的位置
+      '-max_muxing_queue_size 5000',  // 缓存大小，如果是默认的话，因为视频过大，会导致转码失败
+      '-r 15',  // FPS，录制的FPS也是30
+      '-crf 35' // 视频清晰度，值越低越清晰，但是一般来说18是人眼可观察到的，低于18，人是区分不了的。还会增加最终视频的大小
+    ])
+    .save(outputFile);
+});
+
+const client = s3.createClient({
+  s3Options: {
+    region: AWS_REGION,
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY
+  }
+});
+const uploadWebmToS3 = (file, hash) => new Promise(resolve => {
+  const date = new Date();
+  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${hash}.mp4`;
+  const params = {
+    localFile: file,
+    s3Params: {
+      Bucket: AWS_BUCKET,
+      Key: path,
+    }
+  };
+  const uploader = client.uploadFile(params);
+  uploader.on('fileOpened', () => {
+    log('ready upload: file open', {
+      file
+    });
+  });
+  uploader.on('fileClosed', () => {
+    log('ready upload: file closed', {
+      file
+    });
+  });
+  uploader.on('error', err => {
+    log('upload s3 fail', {
+      file,
+      message: err.message,
+      stack: err.stack
+    });
+  });
+  uploader.on('end', () => {
+    const s3URL = `https://s3.${AWS_REGION}.amazonaws.com.cn/${AWS_BUCKET}/${path}`;
+    log('upload s3 success', {
+      file,
+      s3URL
+    });
+    resolve(s3URL);
+  });
+});
 
 const isMac = type() === 'Darwin';
 
+module.exports.ToString = ToString;
+module.exports.paramsToObj = paramsToObj;
+module.exports.log = log;
+module.exports.webmToMP4 = webmToMP4;
+module.exports.uploadWebmToS3 = uploadWebmToS3;
 module.exports.chromePath = isMac ? CHROME_PATH_MAC : CHROME_PATH_LINUX;
-
 module.exports.userDataPath = isMac ? USER_DATA_DIR_MAC : USER_DATA_DIR_LINUX;
