@@ -12,19 +12,6 @@ const {
   AWS_SECRET_ACCESS_KEY,
 } = require('./constants');
 
-console.log(JSON.stringify({
-  CHROME_PATH_LINUX,
-  CHROME_PATH_MAC,
-  USER_DATA_DIR_MAC,
-  USER_DATA_DIR_LINUX,
-  AWS_ACCESS_KEY_ID,
-  AWS_BUCKET,
-  AWS_REGION,
-  AWS_SECRET_ACCESS_KEY
-}, null, '  '));
-
-console.log(process.env);
-
 const ToString = val => typeof val === 'string' ? val : JSON.stringify(val);
 
 const paramsToObj = params => {

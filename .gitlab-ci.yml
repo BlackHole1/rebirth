@@ -151,6 +151,7 @@ docker_build_production:
     - echo $CI_BUILD_REF_NAME
     - echo $CI_BUILD_REF
     - echo $MYSQL_HOST
+    - echo $AWS_BUCKET
 
 deploy_alpha:
   <<: *DEPLOY
