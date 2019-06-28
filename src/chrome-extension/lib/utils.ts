@@ -2,6 +2,7 @@ export const randomNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
+// 检测文件是否下载完成
 export const fileDownloadDone = (filenameRegex: string) => new Promise((resolve => {
   const searchFilename = (filenameRegex: string) => {
     chrome.downloads.search({
@@ -16,3 +17,19 @@ export const fileDownloadDone = (filenameRegex: string) => new Promise((resolve 
   };
   searchFilename(filenameRegex);
 }));
+
+// 调整网页窗口大小
+export const adjustmentPageSize = (tabId: number, width: number, height: number) => {
+  chrome.debugger.attach({ tabId }, '1.3', () => {
+    if (chrome.runtime.lastError) {
+      return;
+    }
+
+    chrome.debugger.sendCommand({ tabId }, 'Emulation.setDeviceMetricsOverride', {
+      mobile: true,
+      width,
+      height,
+      deviceScaleFactor: 0.0,
+    });
+  });
+};

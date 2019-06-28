@@ -20,6 +20,7 @@
     "activeTab",
     "processes",
     "downloads",
+    "debugger",
     "http://*/",
     "https://*/",
     "<all_urls>"

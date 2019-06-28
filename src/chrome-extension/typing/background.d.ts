@@ -5,6 +5,8 @@ export type ITabs = {
     getHash: string;
     action: IAction;
     mediaRecorder: MediaRecorder;
+    width: number;
+    height: number;
   }
 }
 

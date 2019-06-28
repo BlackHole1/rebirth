@@ -21,6 +21,14 @@ class Tabs {
     return (this.getTab(id) && this.getTab(id).mediaRecorder) ? this.getTab(id).mediaRecorder : null;
   }
 
+  getWidth (id: number) {
+    return (this.getTab(id) && this.getTab(id).width) ? this.getTab(id).width : 1920;
+  }
+
+  getHeight (id: number) {
+    return (this.getTab(id) && this.getTab(id).height) ? this.getTab(id).height : 1080;
+  }
+
   createTab (id: number) {
     this.tabs[id] = Object.create(null);
   }
@@ -46,6 +54,24 @@ class Tabs {
       this.createTab(id);
     }
     this.tabs[id].mediaRecorder = mediaRecorder;
+  }
+
+  setWidth (id: number, width: number) {
+    if (this.getTab(id) === null) {
+      this.createTab(id);
+    }
+    if (width !== this.tabs[id].width) {
+      this.tabs[id].width = width;
+    }
+  }
+
+  setHeight (id: number, height: number) {
+    if (this.getTab(id) === null) {
+      this.createTab(id);
+    }
+    if (height !== this.tabs[id].height) {
+      this.tabs[id].height = height;
+    }
   }
 
   deleteTab (id: number) {
