@@ -7,9 +7,11 @@ export type ITabs = {
     mediaRecorder: MediaRecorder;
     width: number;
     height: number;
+    fileName: string;
   }
 }
 
 export interface IData {
   action: IAction;
+  fileName?: string;
 }

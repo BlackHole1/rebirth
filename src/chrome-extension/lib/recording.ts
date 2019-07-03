@@ -37,18 +37,19 @@ const start = (id: number): void => {
 
     mediaRecorder.onstop = () => {
       const hash = tabs.getHash(id);
+      const fileName = tabs.getFileName(id);
       const superBuffer = new Blob(recordedBlobs, blobOptions);
 
       // 不用chrome.downloads.download来下载，是因为这个API存在BUG，对Blob支持不太好
       // 详情见：https://bugs.chromium.org/p/chromium/issues/detail?id=892133#makechanges
       const link = document.createElement('a');
       link.href = URL.createObjectURL(superBuffer);
-      link.setAttribute('download', `${hash}.webm`);
+      link.setAttribute('download', `${fileName}.webm`);
       link.click();
 
-      fileDownloadDone(hash)
+      fileDownloadDone(fileName)
         .then(() => {
-          completeRecordTask(hash);
+          completeRecordTask(hash, fileName);
         })
         .catch(() => {});
 
@@ -75,8 +76,9 @@ const resume = (id: number, mediaRecorder: MediaRecorder): void => {
 };
 
 // 停止录屏，停止后的下载操作在start方法里
-const stop = (id: number, mediaRecorder: MediaRecorder): void => {
+const stop = (id: number, mediaRecorder: MediaRecorder, fileName: string): void => {
   tabs.setAction(id, 'stop');
+  tabs.setFileName(id, fileName);
   mediaRecorder.stop();
 
   // mediaRecorder.stop()只是停止录制，但是其stream还没有被关闭，所以需要获取其录制的所有stream，并逐个关闭

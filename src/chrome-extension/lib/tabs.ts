@@ -29,6 +29,10 @@ class Tabs {
     return (this.getTab(id) && this.getTab(id).height) ? this.getTab(id).height : 1080;
   }
 
+  getFileName (id: number) {
+    return (this.getTab(id) && this.getTab(id).fileName) ? this.getTab(id).fileName : this.getHash(id);
+  }
+
   createTab (id: number) {
     this.tabs[id] = Object.create(null);
   }
@@ -71,6 +75,15 @@ class Tabs {
     }
     if (height !== this.tabs[id].height) {
       this.tabs[id].height = height;
+    }
+  }
+
+  setFileName (id: number, fileName: string) {
+    if (this.getTab(id) === null) {
+      this.createTab(id);
+    }
+    if (fileName !== this.tabs[id].fileName) {
+      this.tabs[id].fileName = fileName;
     }
   }
 

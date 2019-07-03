@@ -36,8 +36,8 @@ const log = (desc, info) => {
   }, null, '  '), '\n');
 };
 
-const webmToMP4 = hash => new Promise((resolve, reject) => {
-  const baseFile = `${homedir}/Downloads/${hash}`;
+const webmToMP4 = fileName => new Promise((resolve, reject) => {
+  const baseFile = `${homedir}/Downloads/${fileName}`;
   const inputFile = baseFile + '.webm';
   const outputFile = baseFile + '.mp4';
 
@@ -64,7 +64,7 @@ const webmToMP4 = hash => new Promise((resolve, reject) => {
     })
     .outputOptions([  // 参数的前后不要加空格，否则会报错，且错误信息不会出现详细的位置
       '-max_muxing_queue_size 5000',  // 缓存大小，如果是默认的话，因为视频过大，会导致转码失败
-      '-r 15',  // FPS，录制的FPS也是30
+      '-r 15',  // FPS，录制的FPS是30
       '-crf 30' // 视频清晰度，值越低越清晰，但是一般来说18是人眼可观察到的，低于18，人是区分不了的。还会增加最终视频的大小
     ])
     .save(outputFile);
@@ -77,11 +77,11 @@ const client = s3.createClient({
     secretAccessKey: AWS_SECRET_ACCESS_KEY
   }
 });
-const uploadWebmToS3 = (file, hash) => new Promise(resolve => {
+const uploadWebmToS3 = (localFilePath, fileName) => new Promise(resolve => {
   const date = new Date();
-  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${hash}.mp4`;
+  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}.mp4`;
   const params = {
-    localFile: file,
+    localFile: localFilePath,
     s3Params: {
       Bucket: AWS_BUCKET,
       Key: path,
@@ -90,17 +90,17 @@ const uploadWebmToS3 = (file, hash) => new Promise(resolve => {
   const uploader = client.uploadFile(params);
   uploader.on('fileOpened', () => {
     log('ready upload: file open', {
-      file
+      localFilePath
     });
   });
   uploader.on('fileClosed', () => {
     log('ready upload: file closed', {
-      file
+      localFilePath
     });
   });
   uploader.on('error', err => {
     log('upload s3 fail', {
-      file,
+      localFilePath,
       message: err.message,
       stack: err.stack
     });
@@ -108,7 +108,7 @@ const uploadWebmToS3 = (file, hash) => new Promise(resolve => {
   uploader.on('end', () => {
     const s3URL = `https://s3.${AWS_REGION}.amazonaws.com.cn/${AWS_BUCKET}/${path}`;
     log('upload s3 success', {
-      file,
+      localFilePath,
       s3URL
     });
     resolve(s3URL);

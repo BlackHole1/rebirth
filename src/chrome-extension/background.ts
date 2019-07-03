@@ -54,8 +54,12 @@ chrome.runtime.onConnect.addListener(port => {
     if ([ 'start', 'pause', 'resume', 'stop', 'fail' ].includes(data.action)) {
       const fun = () => {
         const currentTabId = port.sender.tab.id;
-        const lastParams = tabs.getMediaRecorder(currentTabId);
-        actions[data.action](currentTabId, lastParams);
+
+        if (data.action === 'stop') {
+          actions.stop(currentTabId, tabs.getMediaRecorder(currentTabId), data.fileName);
+        } else {
+          actions[data.action](currentTabId, tabs.getMediaRecorder(currentTabId));
+        }
       };
 
       if (data.action === 'start') {

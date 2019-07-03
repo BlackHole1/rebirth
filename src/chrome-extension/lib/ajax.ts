@@ -13,8 +13,8 @@ export const getRecordTasks = (num: number): Promise<IRecord> => {
 };
 
 // 完成录制
-export const completeRecordTask = (hash: string) => {
-  fetch(`${SERVER_URL}/completeRecordTask?hash=${hash}`)
+export const completeRecordTask = (hash: string, fileName: string) => {
+  fetch(`${SERVER_URL}/completeRecordTask?hash=${hash}&fileName=${fileName}`)
     .catch(e => {
       console.error(e);
     });
