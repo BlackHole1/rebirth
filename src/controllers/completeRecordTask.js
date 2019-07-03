@@ -6,7 +6,7 @@ const { MYSQL_TABLE } = require('../lib/constants');
 
 // 完成录制
 const completeRecordTask = (req, res) => {
-  const { hash, fileName } = req.query;
+  const { hash, fileName, width, height } = req.query;
 
   const updateDB = s3URL => {
     mysqlService.getConnection()
@@ -33,7 +33,7 @@ const completeRecordTask = (req, res) => {
       });
   };
 
-  webmToMP4(fileName)
+  webmToMP4(fileName, width, height)
     .then(localFilePath => uploadWebmToS3(localFilePath, fileName))
     .then(updateDB)
     .catch(() => {});

@@ -1,20 +1,18 @@
 // 录制配置
-export const captureConfig = (width: number, height: number) => {
-  return {
-    video: true,
-    audio: true,
-    videoConstraints: {
-      mandatory: {
-        minWidth: width,
-        minHeight: height,
-        maxWidth: width,
-        maxHeight: height,
-        maxFrameRate: 30,
-        minFrameRate: 30,
-      }
+export const captureConfig = {
+  video: true,
+  audio: true,
+  videoConstraints: {
+    mandatory: {
+      minWidth: 1920,
+      minHeight: 1080,
+      maxWidth: 1920,
+      maxHeight: 1080,
+      maxFrameRate: 30,
+      minFrameRate: 30,
     }
+  }
   };
-};
 
 // mediaRecorder配置
 export const mediaRecorderOptions = {

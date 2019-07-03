@@ -5,7 +5,7 @@ import { RecordNumber } from './lib/constants';
 import recordingQueue from './lib/recordingQueue';
 import actions from './lib/recording';
 import { IData } from './typing/background';
-import { adjustmentPageSize, randomNumber } from './lib/utils';
+import { randomNumber } from './lib/utils';
 
 // 获取需要录制的网站以及打开
 const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
@@ -25,7 +25,6 @@ const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
           tabs.setHash(id, record.task_hash);
           tabs.setWidth(id, width);
           tabs.setHeight(id, height);
-          adjustmentPageSize(id, width, height);
         });
       });
     })

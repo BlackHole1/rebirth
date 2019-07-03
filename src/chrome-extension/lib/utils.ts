@@ -17,19 +17,3 @@ export const fileDownloadDone = (filenameRegex: string) => new Promise((resolve 
   };
   searchFilename(filenameRegex);
 }));
-
-// 调整网页窗口大小
-export const adjustmentPageSize = (tabId: number, width: number, height: number) => {
-  chrome.debugger.attach({ tabId }, '1.3', () => {
-    if (chrome.runtime.lastError) {
-      return;
-    }
-
-    chrome.debugger.sendCommand({ tabId }, 'Emulation.setDeviceMetricsOverride', {
-      mobile: true,
-      width,
-      height,
-      deviceScaleFactor: 0.0,
-    });
-  });
-};
