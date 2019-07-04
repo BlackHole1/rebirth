@@ -26,6 +26,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "promise-mysql": "^3.3.1",
     "puppeteer-core": "^1.14.0",
+    "rimraf": "^2.6.3",
     "ws": "^6.2.1"
   },
   "devDependencies": {

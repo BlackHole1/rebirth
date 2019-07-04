@@ -1,12 +1,13 @@
 const mysqlService = require('../lib/mysql');
 const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
-const { webmToMP4, uploadWebmToS3 } = require('../lib/utils');
+const { webmToMP4, uploadWebmToS3, deleteFiles } = require('../lib/utils');
 const { MYSQL_TABLE } = require('../lib/constants');
 
 // 完成录制
 const completeRecordTask = (req, res) => {
   const { hash, fileName, width, height } = req.query;
+  let willDeleteFiles = [];
 
   const updateDB = s3URL => {
     mysqlService.getConnection()
@@ -34,8 +35,12 @@ const completeRecordTask = (req, res) => {
   };
 
   webmToMP4(fileName, width, height)
-    .then(localFilePath => uploadWebmToS3(localFilePath, fileName))
+    .then(({ inputFile, outputFile }) => {
+      willDeleteFiles = willDeleteFiles.concat(inputFile, outputFile);
+      return uploadWebmToS3(outputFile, fileName)
+    })
     .then(updateDB)
+    .then(() => deleteFiles(willDeleteFiles))
     .catch(() => {});
 
   res.sendJson({});

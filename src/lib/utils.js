@@ -1,4 +1,5 @@
 const { type, homedir } = require('os');
+const rimraf = require('rimraf');
 const ffmpeg = require('fluent-ffmpeg');
 const s3 = require('@auth0/s3');
 const {
@@ -60,7 +61,10 @@ const webmToMP4 = (fileName, width, height) => new Promise((resolve, reject) => 
         inputFile,
         outputFile,
       });
-      resolve(outputFile);
+      resolve({
+        inputFile,
+        outputFile
+      });
     })
     .outputOptions([  // 参数的前后不要加空格，否则会报错，且错误信息不会出现详细的位置
       '-max_muxing_queue_size 5000',  // 缓存大小，如果是默认的话，因为视频过大，会导致转码失败
@@ -116,6 +120,24 @@ const uploadWebmToS3 = (localFilePath, fileName) => new Promise(resolve => {
   });
 });
 
+const deleteFiles = fileList => {
+  return Promise.all(fileList.map(file => new Promise(resolve => {
+    rimraf(file, (e) => {
+      if (e) {
+        log('delete file fail', {
+          error: e
+        });
+        resolve();
+      } else {
+        log('delete file success', {
+          file
+        });
+        resolve();
+      }
+    })
+  })))
+};
+
 const isMac = type() === 'Darwin';
 
 module.exports.ToString = ToString;
@@ -123,5 +145,6 @@ module.exports.paramsToObj = paramsToObj;
 module.exports.log = log;
 module.exports.webmToMP4 = webmToMP4;
 module.exports.uploadWebmToS3 = uploadWebmToS3;
+module.exports.deleteFiles = deleteFiles;
 module.exports.chromePath = isMac ? CHROME_PATH_MAC : CHROME_PATH_LINUX;
 module.exports.userDataPath = isMac ? USER_DATA_DIR_MAC : USER_DATA_DIR_LINUX;
