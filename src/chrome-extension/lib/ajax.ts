@@ -13,8 +13,8 @@ export const getRecordTasks = (num: number): Promise<IRecord> => {
 };
 
 // 完成录制
-export const completeRecordTask = (hash: string, fileName: string, width: number, height: number) => {
-  fetch(`${SERVER_URL}/completeRecordTask?hash=${hash}&fileName=${fileName}&width=${width}&height=${height}`)
+export const completeRecordTask = (hash: string, fileName: string, subS3Key: string, width: number, height: number) => {
+  fetch(`${SERVER_URL}/completeRecordTask?hash=${hash}&fileName=${fileName}&subS3Key=${subS3Key}&width=${width}&height=${height}`)
     .catch(e => {
       console.error(e);
     });

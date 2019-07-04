@@ -82,9 +82,9 @@ const client = s3.createClient({
     secretAccessKey: AWS_SECRET_ACCESS_KEY
   }
 });
-const uploadWebmToS3 = (localFilePath, fileName) => new Promise(resolve => {
+const uploadWebmToS3 = (localFilePath, fileName, subS3Key) => new Promise(resolve => {
   const date = new Date();
-  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${fileName}.mp4`;
+  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${subS3Key}/${fileName}.mp4`;
   const params = {
     localFile: localFilePath,
     s3Params: {

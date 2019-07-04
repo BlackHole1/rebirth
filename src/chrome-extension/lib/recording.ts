@@ -47,7 +47,7 @@ const start = (id: number): void => {
 
       fileDownloadDone(fileName)
         .then(() => {
-          completeRecordTask(hash, fileName, tabs.getWidth(id), tabs.getHeight(id));
+          completeRecordTask(hash, fileName, tabs.getSubS3Key(id), tabs.getWidth(id), tabs.getHeight(id));
         })
         .catch(() => {});
 

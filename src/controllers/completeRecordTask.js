@@ -6,7 +6,7 @@ const { MYSQL_TABLE } = require('../lib/constants');
 
 // 完成录制
 const completeRecordTask = (req, res) => {
-  const { hash, fileName, width, height } = req.query;
+  const { hash, fileName, subS3Key, width, height } = req.query;
   let willDeleteFiles = [];
 
   const updateDB = s3URL => {
@@ -37,7 +37,7 @@ const completeRecordTask = (req, res) => {
   webmToMP4(fileName, width, height)
     .then(({ inputFile, outputFile }) => {
       willDeleteFiles = willDeleteFiles.concat(inputFile, outputFile);
-      return uploadWebmToS3(outputFile, fileName)
+      return uploadWebmToS3(outputFile, fileName, subS3Key)
     })
     .then(updateDB)
     .then(() => deleteFiles(willDeleteFiles))

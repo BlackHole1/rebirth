@@ -23,6 +23,7 @@ const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
           const [ width, height ] = record.screen_size.split('x').map(Number);
           tabs.setAction(id, 'waiting');
           tabs.setHash(id, record.task_hash);
+          tabs.setSubS3Key(id, record.sub_s3_key);
           tabs.setWidth(id, width);
           tabs.setHeight(id, height);
         });

@@ -4,4 +4,5 @@ export type IRecord = {
   task_hash: string;
   merge_result_url: string;
   screen_size: string;
+  sub_s3_key: string;
 }[];

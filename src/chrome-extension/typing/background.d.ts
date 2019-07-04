@@ -8,6 +8,7 @@ export type ITabs = {
     width: number;
     height: number;
     fileName: string;
+    subS3Key: string;
   }
 }
 
