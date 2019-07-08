@@ -84,7 +84,7 @@ const client = s3.createClient({
 });
 const uploadWebmToS3 = (localFilePath, fileName, subS3Key) => new Promise(resolve => {
   const date = new Date();
-  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${subS3Key}/${fileName}.mp4`;
+  const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${subS3Key}/${fileName}`;
   const params = {
     localFile: localFilePath,
     s3Params: {

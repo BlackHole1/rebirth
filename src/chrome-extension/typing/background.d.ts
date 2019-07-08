@@ -1,4 +1,4 @@
-import { IAction } from './rebirth';
+import { IAction, IActionHelper } from './rebirth';
 
 export type ITabs = {
   [key in string | number]: {
@@ -9,10 +9,14 @@ export type ITabs = {
     height: number;
     fileName: string;
     subS3Key: string;
+    generateFileList: Record<string, string>;
   }
 }
 
 export interface IData {
-  action: IAction;
+  action: IAction & IActionHelper;
   fileName?: string;
+  content?: string;
+  width?: number;
+  height?: number;
 }

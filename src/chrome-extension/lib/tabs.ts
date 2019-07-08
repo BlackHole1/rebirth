@@ -37,8 +37,13 @@ class Tabs {
     return (this.getTab(id) && this.getTab(id).subS3Key) ? this.getTab(id).subS3Key : this.getHash(id);
   }
 
+  getFileList (id: number) {
+    return (this.getTab(id) && this.getTab(id).generateFileList) ? this.getTab(id).generateFileList : {};
+  }
+
   createTab (id: number) {
     this.tabs[id] = Object.create(null);
+    this.tabs[id].generateFileList = {};
   }
 
   setHash (id: number, getHash: string) {
@@ -98,6 +103,14 @@ class Tabs {
     if (subS3Key !== this.tabs[id].subS3Key) {
       this.tabs[id].subS3Key = subS3Key;
     }
+  }
+
+  addFile (id: number, data: Record<'name' | 'content', string>) {
+    if (this.getTab(id) === null) {
+      this.createTab(id);
+    }
+
+    this.tabs[id].generateFileList[data.name] = data.content;
   }
 
   deleteTab (id: number) {

@@ -5,7 +5,7 @@ import { completeRecordTask, recordFail } from './ajax';
 import { fileDownloadDone } from './utils';
 
 // 开始录屏
-const start = (id: number): void => {
+const start = (id: number, width: number, height: number): void => {
   tabs.setAction(id, 'start');
 
   // 切换标签到触发start动作的标签页，因为tabCapture.capture是在当前Tab触发
@@ -15,7 +15,7 @@ const start = (id: number): void => {
 
   // 开始进行录屏，加上ts-ignore，是因为@types/chrome package还没更新，导致其类型是错误的
   // @ts-ignore
-  chrome.tabCapture.capture(captureConfig, stream => {
+  chrome.tabCapture.capture(captureConfig(width, height), stream => {
     recordingQueue.complete();
     if (stream === null) {
       chrome.tabs.sendMessage(id, {
@@ -47,7 +47,7 @@ const start = (id: number): void => {
 
       fileDownloadDone(fileName)
         .then(() => {
-          completeRecordTask(hash, fileName, tabs.getSubS3Key(id), tabs.getWidth(id), tabs.getHeight(id));
+          completeRecordTask(hash, fileName, tabs.getSubS3Key(id), tabs.getWidth(id), tabs.getHeight(id), tabs.getFileList(id));
         })
         .catch(() => {});
 

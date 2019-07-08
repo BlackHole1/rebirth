@@ -51,22 +51,28 @@ setTimeout(() => {
 // 监听网页消息
 chrome.runtime.onConnect.addListener(port => {
   port.onMessage.addListener((data: IData) => {
-    if ([ 'start', 'pause', 'resume', 'stop', 'fail' ].includes(data.action)) {
-      const fun = () => {
-        const currentTabId = port.sender.tab.id;
+    const currentTabId = port.sender.tab.id;
+    const params = [ currentTabId, tabs.getMediaRecorder(currentTabId) ];
 
-        if (data.action === 'stop') {
-          actions.stop(currentTabId, tabs.getMediaRecorder(currentTabId), data.fileName);
-        } else {
-          actions[data.action](currentTabId, tabs.getMediaRecorder(currentTabId));
-        }
-      };
+    if ([ 'pause', 'resume', 'fail' ].includes(data.action)) {
+      actions[data.action](...params);
+    }
 
-      if (data.action === 'start') {
-        recordingQueue.enqueue(fun);
-      } else {
-        fun();
-      }
+    if (data.action === 'start') {
+      recordingQueue.enqueue(() => {
+        actions.start(currentTabId, data.width, data.height);
+      });
+    }
+
+    if (data.action === 'stop') {
+      actions.stop(...params, data.fileName);
+    }
+
+    if (data.action === 'generateFile') {
+      tabs.addFile(currentTabId, {
+        name: data.fileName,
+        content: data.content
+      });
     }
   });
 });

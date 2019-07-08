@@ -17,3 +17,16 @@ export const fileDownloadDone = (filenameRegex: string) => new Promise((resolve 
   };
   searchFilename(filenameRegex);
 }));
+
+export const fetchPost = (url: string, data: Record<string, any>) => {
+  return fetch(url, {
+    body: JSON.stringify(data),
+    method: 'POST',
+    cache: 'no-cache',
+    headers: {
+      'content-type': 'application/json'
+    },
+    mode: 'cors',
+    credentials: 'include'
+  });
+};

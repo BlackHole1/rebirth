@@ -43,5 +43,18 @@ module.exports = (req, res) => {
     log('error', data);
   };
 
-  routers(req, res);
+  if (req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        req.body = JSON.parse(body);
+        routers(req, res);
+      } catch (e) {}
+    });
+  } else {
+    routers(req, res);
+  }
 };

@@ -1,3 +1,5 @@
+const { writeFileSync } = require('fs');
+const { homedir } = require('os');
 const mysqlService = require('../lib/mysql');
 const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
@@ -6,7 +8,7 @@ const { MYSQL_TABLE } = require('../lib/constants');
 
 // 完成录制
 const completeRecordTask = (req, res) => {
-  const { hash, fileName, subS3Key, width, height } = req.query;
+  const { hash, fileName, subS3Key, width, height, fileList } = req.body;
   let willDeleteFiles = [];
 
   const updateDB = s3URL => {
@@ -37,7 +39,15 @@ const completeRecordTask = (req, res) => {
   webmToMP4(fileName, width, height)
     .then(({ inputFile, outputFile }) => {
       willDeleteFiles = willDeleteFiles.concat(inputFile, outputFile);
-      return uploadWebmToS3(outputFile, fileName, subS3Key)
+
+      // 根据rebirth.generateFile接口保存的文件内容，批量写入文件、上传S3
+      Object.keys(fileList).forEach(name => {
+        const filePath = `${homedir}/Downloads/${name}`;
+        writeFileSync(filePath, fileList[name], 'utf-8');
+        uploadWebmToS3(filePath, name, subS3Key);
+        willDeleteFiles.push(filePath);
+      });
+      return uploadWebmToS3(outputFile, `${fileName}.mp4`, subS3Key)
     })
     .then(updateDB)
     .then(() => deleteFiles(willDeleteFiles))

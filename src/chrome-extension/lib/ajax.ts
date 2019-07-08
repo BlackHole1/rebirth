@@ -1,5 +1,6 @@
 // 向服务获取要录制的网站
 import { IRecord } from '../typing/request';
+import { fetchPost } from './utils';
 
 export const getRecordTasks = (num: number): Promise<IRecord> => {
   return new Promise((resolve, reject) => {
@@ -13,8 +14,17 @@ export const getRecordTasks = (num: number): Promise<IRecord> => {
 };
 
 // 完成录制
-export const completeRecordTask = (hash: string, fileName: string, subS3Key: string, width: number, height: number) => {
-  fetch(`${SERVER_URL}/completeRecordTask?hash=${hash}&fileName=${fileName}&subS3Key=${subS3Key}&width=${width}&height=${height}`)
+export const completeRecordTask = (
+  hash: string, fileName: string, subS3Key: string, width: number, height: number, fileList: Record<string, string>
+) => {
+  fetchPost(`${SERVER_URL}/completeRecordTask`, {
+    hash,
+    fileName,
+    subS3Key,
+    width,
+    height,
+    fileList
+  })
     .catch(e => {
       console.error(e);
     });

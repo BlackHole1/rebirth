@@ -1,18 +1,33 @@
-import { IData } from './typing/background';
-import { IAction } from './typing/rebirth';
-
 window.rebirth = Object.create(null);
 
-[ 'start', 'pause', 'resume', 'stop', 'fail' ].forEach((m: IAction) => {
-  window.rebirth[m] = (fileName?: string) => {
-    const msg: IData = {
+[ 'pause', 'resume', 'fail' ].forEach((m) => {
+  window.rebirth[m] = () => {
+    const msg = {
       'action': m,
     };
-
-    if (typeof fileName === 'string' && m === 'stop') {
-      msg.fileName = fileName;
-    }
-
     window.postMessage(msg, '*');
+  };
+
+  window.rebirth.start = () => {
+    window.postMessage({
+      action: 'start',
+      width: document.documentElement.clientWidth,  // 不同的页面，其可是宽高是不同的，如果不做处理，会导致录制时出现黑边的情况
+      height: document.documentElement.clientHeight
+    }, '*');
+  };
+
+  window.rebirth.stop = (fileName: string) => {
+    window.postMessage({
+      action: 'stop',
+      fileName
+    }, '*');
+  };
+
+  window.rebirth.generateFile = (fileName: string, content: string) => {
+    window.postMessage({
+      action: 'generateFile',
+      fileName,
+      content
+    }, '*');
   };
 });
