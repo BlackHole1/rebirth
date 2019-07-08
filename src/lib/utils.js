@@ -67,7 +67,7 @@ const webmToMP4 = (fileName, width, height) => new Promise((resolve, reject) => 
       });
     })
     .outputOptions([  // 参数的前后不要加空格，否则会报错，且错误信息不会出现详细的位置
-      '-max_muxing_queue_size 5000',  // 缓存大小，如果是默认的话，因为视频过大，会导致转码失败
+      '-max_muxing_queue_size 99999',  // 缓存大小，如果是默认的话，因为视频过大，会导致转码失败
       '-r 15',  // FPS，录制的FPS是30
       '-crf 30', // 视频清晰度，值越低越清晰，但是一般来说18是人眼可观察到的，低于18，人是区分不了的。还会增加最终视频的大小
       `-filter:v crop=${width}:${height}:0:0`, // 截取视频宽高
