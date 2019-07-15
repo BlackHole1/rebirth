@@ -1,7 +1,7 @@
 interface Window {
   rebirth: {
     [key: string]: (...args: any[]) => void;
-    stop: (fileName: string) => void
+    stop: (sourceFileName: string, partFileName: string) => void
     generateFile: (fileName: string, content: string) => void;
   };
 }

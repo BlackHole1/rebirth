@@ -16,6 +16,7 @@ export const captureConfig = (width: number, height: number) => ({
 
 // mediaRecorder配置
 export const mediaRecorderOptions = {
+  audioBitsPerSecond: 128000,
   videoBitsPerSecond: 2500000,
   mimeType: 'video/webm;codecs=vp9'
 };

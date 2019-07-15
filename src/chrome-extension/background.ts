@@ -65,7 +65,7 @@ chrome.runtime.onConnect.addListener(port => {
     }
 
     if (data.action === 'stop') {
-      actions.stop(...params, data.fileName);
+      actions.stop(...params, data.sourceFileName, data.partFileName);
     }
 
     if (data.action === 'generateFile') {

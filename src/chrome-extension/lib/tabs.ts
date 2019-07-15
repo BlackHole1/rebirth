@@ -29,8 +29,12 @@ class Tabs {
     return (this.getTab(id) && this.getTab(id).height) ? this.getTab(id).height : 1080;
   }
 
-  getFileName (id: number) {
-    return (this.getTab(id) && this.getTab(id).fileName) ? this.getTab(id).fileName : this.getHash(id);
+  getSourceFileName (id: number) {
+    return (this.getTab(id) && this.getTab(id).sourceFileName) ? this.getTab(id).sourceFileName : this.getHash(id);
+  }
+
+  getPartFileName (id: number) {
+    return (this.getTab(id) && this.getTab(id).partFileName) ? this.getTab(id).partFileName : this.getHash(id);
   }
 
   getSubS3Key (id: number) {
@@ -87,12 +91,21 @@ class Tabs {
     }
   }
 
-  setFileName (id: number, fileName: string) {
+  setSourceFileName (id: number, sourceFileName: string) {
     if (this.getTab(id) === null) {
       this.createTab(id);
     }
-    if (fileName !== this.tabs[id].fileName) {
-      this.tabs[id].fileName = fileName;
+    if (sourceFileName !== this.tabs[id].sourceFileName) {
+      this.tabs[id].sourceFileName = sourceFileName;
+    }
+  }
+
+  setPartFileName (id: number, partFileName: string) {
+    if (this.getTab(id) === null) {
+      this.createTab(id);
+    }
+    if (partFileName !== this.tabs[id].partFileName) {
+      this.tabs[id].partFileName = partFileName;
     }
   }
 

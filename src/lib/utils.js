@@ -37,10 +37,10 @@ const log = (desc, info) => {
   }, null, '  '), '\n');
 };
 
-const webmToMP4 = (fileName, width, height) => new Promise((resolve, reject) => {
-  const baseFile = `${homedir}/Downloads/${fileName}`;
-  const inputFile = baseFile + '.webm';
-  const outputFile = baseFile + '.mp4';
+const ffmpegHelper = (inputName, outputName, ffmpegParams) => new Promise((resolve, reject) => {
+  const baseFile = `${homedir}/Downloads/`;
+  const inputFile = baseFile + inputName;
+  const outputFile = baseFile + outputName;
 
   ffmpeg(inputFile)
     .on('start', function(commandLine) {
@@ -66,12 +66,7 @@ const webmToMP4 = (fileName, width, height) => new Promise((resolve, reject) => 
         outputFile
       });
     })
-    .outputOptions([  // 参数的前后不要加空格，否则会报错，且错误信息不会出现详细的位置
-      '-max_muxing_queue_size 99999',  // 缓存大小，如果是默认的话，因为视频过大，会导致转码失败
-      '-r 15',  // FPS，录制的FPS是30
-      '-crf 30', // 视频清晰度，值越低越清晰，但是一般来说18是人眼可观察到的，低于18，人是区分不了的。还会增加最终视频的大小
-      `-filter:v crop=${width}:${height}:0:0`, // 截取视频宽高
-    ])
+    .outputOptions(ffmpegParams)
     .save(outputFile);
 });
 
@@ -143,7 +138,7 @@ const isMac = type() === 'Darwin';
 module.exports.ToString = ToString;
 module.exports.paramsToObj = paramsToObj;
 module.exports.log = log;
-module.exports.webmToMP4 = webmToMP4;
+module.exports.ffmpegHelper = ffmpegHelper;
 module.exports.uploadWebmToS3 = uploadWebmToS3;
 module.exports.deleteFiles = deleteFiles;
 module.exports.chromePath = isMac ? CHROME_PATH_MAC : CHROME_PATH_LINUX;

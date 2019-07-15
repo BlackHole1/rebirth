@@ -14,14 +14,12 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 
-# 安装环境
+# 安装环境，如果一次安装过多时，会出现安装失败的情况
 RUN apt-get install -yq git
 RUN apt-get install -yq xvfb
 RUN apt-get install -yq nodejs
 RUN apt-get install -yq npm
 RUN apt-get install -yq lsof
-RUN apt-get install -yq yasm
-RUN apt-get install -yq ffmpeg
 
 # 安装基本依赖
 RUN apt-get install -yq wget
@@ -58,6 +56,9 @@ WORKDIR /etc/www
 RUN npm install -g node-gyp
 COPY src ./
 RUN npm install --production
+
+COPY ffmpeg_sources/ /usr/local/bin
+RUN chmod +x /usr/local/bin/ffmpeg /usr/local/bin/ffprobe
 
 # 容器运行启动脚本
 COPY entrypoint.sh ./

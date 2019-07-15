@@ -14,12 +14,20 @@ export const getRecordTasks = (num: number): Promise<IRecord> => {
 };
 
 // 完成录制
-export const completeRecordTask = (
-  hash: string, fileName: string, subS3Key: string, width: number, height: number, fileList: Record<string, string>
-) => {
+export const completeRecordTask = (params: {
+  hash: string;
+  sourceFileName: string;
+  partFileName: string;
+  subS3Key: string;
+  width: number;
+  height: number;
+  fileList: Record<string, string>
+}) => {
+  const { hash, sourceFileName, partFileName, subS3Key, width, height, fileList } = params;
   fetchPost(`${SERVER_URL}/completeRecordTask`, {
     hash,
-    fileName,
+    sourceFileName,
+    partFileName,
     subS3Key,
     width,
     height,

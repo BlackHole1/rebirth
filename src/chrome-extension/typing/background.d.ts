@@ -7,7 +7,8 @@ export type ITabs = {
     mediaRecorder: MediaRecorder;
     width: number;
     height: number;
-    fileName: string;
+    sourceFileName: string;
+    partFileName: string;
     subS3Key: string;
     generateFileList: Record<string, string>;
   }
@@ -15,6 +16,8 @@ export type ITabs = {
 
 export interface IData {
   action: IAction & IActionHelper;
+  sourceFileName?: string;
+  partFileName?: string;
   fileName?: string;
   content?: string;
   width?: number;

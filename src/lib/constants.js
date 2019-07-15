@@ -20,3 +20,19 @@ module.exports.CHROME_PATH_LINUX = '/usr/bin/google-chrome-stable';
 
 module.exports.USER_DATA_DIR_MAC = '/tmp/rebirth';
 module.exports.USER_DATA_DIR_LINUX = '/root/test';
+
+module.exports.WEBM_TO_MP4 = (width, height) => [
+  '-max_muxing_queue_size 99999',  // 缓存大小，如果是默认的话，因为视频过大，会导致转码失败
+  '-r 15',  // FPS，录制的FPS是30
+  '-crf 30', // 视频清晰度，值越低越清晰，但是一般来说18是人眼可观察到的，低于18，人是区分不了的。还会增加最终视频的大小
+  `-filter:v crop=${width}:${height}:0:0` // 截取视频宽高
+];
+module.exports.MP4_TO_SILENT = [
+  '-an',
+  '-vcodec copy'
+];
+module.exports.MP4_TO_AAC =[
+  '-vn',
+  '-acodec libfdk_aac',
+  '-b:a 200k'
+];
