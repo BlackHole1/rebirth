@@ -50,7 +50,7 @@ const completeRecordTask = (req, res) => {
 
       return Promise.all([
         convAndUpload(`${partFileName}.mp4`, MP4_TO_SILENT),
-        convAndUpload(`${partFileName}.aac`, MP4_TO_AAC)
+        convAndUpload(`${partFileName}.aac`, MP4_TO_AAC),
       ])
         .then(() => uploadWebmToS3(outputFile, `${sourceFileName}.mp4`, subS3Key))
     })
