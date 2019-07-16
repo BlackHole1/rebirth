@@ -19,20 +19,11 @@ export const completeRecordTask = (params: {
   sourceFileName: string;
   partFileName: string;
   subS3Key: string;
-  width: number;
-  height: number;
+  videoWidth: number;
+  videoHeight: number;
   fileList: Record<string, string>
 }) => {
-  const { hash, sourceFileName, partFileName, subS3Key, width, height, fileList } = params;
-  fetchPost(`${SERVER_URL}/completeRecordTask`, {
-    hash,
-    sourceFileName,
-    partFileName,
-    subS3Key,
-    width,
-    height,
-    fileList
-  })
+  fetchPost(`${SERVER_URL}/completeRecordTask`, params)
     .catch(e => {
       console.error(e);
     });

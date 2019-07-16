@@ -8,7 +8,7 @@ const { MYSQL_TABLE, WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC } = require('../lib/
 
 // 完成录制
 const completeRecordTask = (req, res) => {
-  const { hash, sourceFileName, partFileName, subS3Key, width, height, fileList } = req.body;
+  const { hash, sourceFileName, partFileName, subS3Key, videoWidth, videoHeight, fileList } = req.body;
   let willDeleteFiles = [];
 
   const updateDB = s3URL => {
@@ -36,7 +36,7 @@ const completeRecordTask = (req, res) => {
       });
   };
 
-  ffmpegHelper(`${sourceFileName}.webm`, `${sourceFileName}.mp4`, WEBM_TO_MP4(width, height))
+  ffmpegHelper(`${sourceFileName}.webm`, `${sourceFileName}.mp4`, WEBM_TO_MP4(videoWidth, videoHeight))
     .then(({ inputFile, outputFile }) => {
       willDeleteFiles.push(inputFile, outputFile);
 

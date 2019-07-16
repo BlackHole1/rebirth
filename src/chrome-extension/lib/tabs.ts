@@ -21,12 +21,12 @@ class Tabs {
     return (this.getTab(id) && this.getTab(id).mediaRecorder) ? this.getTab(id).mediaRecorder : null;
   }
 
-  getWidth (id: number) {
-    return (this.getTab(id) && this.getTab(id).width) ? this.getTab(id).width : 1920;
+  getVideoWidth (id: number) {
+    return (this.getTab(id) && this.getTab(id).videoWidth) ? this.getTab(id).videoWidth : 0;
   }
 
-  getHeight (id: number) {
-    return (this.getTab(id) && this.getTab(id).height) ? this.getTab(id).height : 1080;
+  getVideoHeight (id: number) {
+    return (this.getTab(id) && this.getTab(id).videoHeight) ? this.getTab(id).videoHeight : 0;
   }
 
   getSourceFileName (id: number) {
@@ -73,21 +73,21 @@ class Tabs {
     this.tabs[id].mediaRecorder = mediaRecorder;
   }
 
-  setWidth (id: number, width: number) {
+  setVideoWidth (id: number, width: number) {
     if (this.getTab(id) === null) {
       this.createTab(id);
     }
-    if (width !== this.tabs[id].width) {
-      this.tabs[id].width = width;
+    if (width !== this.tabs[id].videoWidth) {
+      this.tabs[id].videoWidth = width;
     }
   }
 
-  setHeight (id: number, height: number) {
+  setVideoHeight (id: number, height: number) {
     if (this.getTab(id) === null) {
       this.createTab(id);
     }
-    if (height !== this.tabs[id].height) {
-      this.tabs[id].height = height;
+    if (height !== this.tabs[id].videoHeight) {
+      this.tabs[id].videoHeight = height;
     }
   }
 

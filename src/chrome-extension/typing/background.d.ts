@@ -5,8 +5,8 @@ export type ITabs = {
     getHash: string;
     action: IAction;
     mediaRecorder: MediaRecorder;
-    width: number;
-    height: number;
+    videoWidth: number;
+    videoHeight: number;
     sourceFileName: string;
     partFileName: string;
     subS3Key: string;
@@ -15,11 +15,13 @@ export type ITabs = {
 }
 
 export interface IData {
-  action: IAction & IActionHelper;
+  action: IAction | IActionHelper;
   sourceFileName?: string;
   partFileName?: string;
   fileName?: string;
   content?: string;
-  width?: number;
-  height?: number;
+  pageWidth?: number;
+  pageHeight?: number;
+  videoWidth?: number;
+  videoHeight?: number;
 }

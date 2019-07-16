@@ -3,6 +3,7 @@ interface Window {
     [key: string]: (...args: any[]) => void;
     stop: (sourceFileName: string, partFileName: string) => void
     generateFile: (fileName: string, content: string) => void;
+    setVideoBounds: ({ width, height }: { width: number, height: number }) => void;
   };
 }
 

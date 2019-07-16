@@ -11,8 +11,8 @@ window.rebirth = Object.create(null);
   window.rebirth.start = () => {
     window.postMessage({
       action: 'start',
-      width: document.documentElement.clientWidth,  // 不同的页面，其可是宽高是不同的，如果不做处理，会导致录制时出现黑边的情况
-      height: document.documentElement.clientHeight
+      pageWidth: document.documentElement.clientWidth,  // 不同的页面，其可是宽高是不同的，如果不做处理，会导致录制时出现黑边的情况
+      pageHeight: document.documentElement.clientHeight
     }, '*');
   };
 
@@ -29,6 +29,14 @@ window.rebirth = Object.create(null);
       action: 'generateFile',
       fileName,
       content
+    }, '*');
+  };
+
+  window.rebirth.setVideoBounds = ({ width, height }) => {
+    window.postMessage({
+      action: 'setVideoBounds',
+      videoWidth: width,
+      videoHeight: height
     }, '*');
   };
 });

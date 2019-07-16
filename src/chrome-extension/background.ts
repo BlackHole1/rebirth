@@ -20,12 +20,9 @@ const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
           url: record.material_url
         }, tab => {
           const id = tab.id;
-          const [ width, height ] = record.screen_size.split('x').map(Number);
           tabs.setAction(id, 'waiting');
           tabs.setHash(id, record.task_hash);
           tabs.setSubS3Key(id, record.sub_s3_key);
-          tabs.setWidth(id, width);
-          tabs.setHeight(id, height);
         });
       });
     })
@@ -60,7 +57,7 @@ chrome.runtime.onConnect.addListener(port => {
 
     if (data.action === 'start') {
       recordingQueue.enqueue(() => {
-        actions.start(currentTabId, data.width, data.height);
+        actions.start(currentTabId, data.pageWidth, data.pageHeight);
       });
     }
 
@@ -73,6 +70,11 @@ chrome.runtime.onConnect.addListener(port => {
         name: data.fileName,
         content: data.content
       });
+    }
+
+    if (data.action === 'setVideoBounds') {
+      tabs.setVideoWidth(currentTabId, data.videoWidth);
+      tabs.setVideoHeight(currentTabId, data.videoHeight);
     }
   });
 });
