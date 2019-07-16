@@ -34,7 +34,7 @@ class Tabs {
   }
 
   getPartFileName (id: number) {
-    return (this.getTab(id) && this.getTab(id).partFileName) ? this.getTab(id).partFileName : 'partFileName_is_null';
+    return (this.getTab(id) && this.getTab(id).partFileName) ? this.getTab(id).partFileName : '';
   }
 
   getSubS3Key (id: number) {

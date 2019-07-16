@@ -1,6 +1,7 @@
 const { writeFileSync } = require('fs');
 const { homedir } = require('os');
 const mysqlService = require('../lib/mysql');
+const rerecord = require('../lib/rerecord');
 const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
 const { ffmpegHelper, uploadFileToS3, deleteFiles } = require('../lib/utils');
@@ -71,7 +72,9 @@ const completeRecordTask = (req, res) => {
       });
     })
     .then(() => deleteFiles(willDeleteFiles))
-    .catch(() => {});
+    .catch(() => {
+      rerecord(dbId);
+    });
 
   res.sendJson({});
 };
