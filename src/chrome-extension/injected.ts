@@ -16,11 +16,11 @@ window.rebirth = Object.create(null);
     }, '*');
   };
 
-  window.rebirth.stop = (sourceFileName: string, partFileName: string) => {
+  window.rebirth.stop = ({ originFileName, transformFileName }: { originFileName: string; transformFileName?: string }) => {
     window.postMessage({
       action: 'stop',
-      sourceFileName,
-      partFileName
+      sourceFileName: originFileName,
+      partFileName: transformFileName || ''
     }, '*');
   };
 

@@ -3,7 +3,7 @@ const { homedir } = require('os');
 const mysqlService = require('../lib/mysql');
 const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
-const { ffmpegHelper, uploadWebmToS3, deleteFiles } = require('../lib/utils');
+const { ffmpegHelper, uploadFileToS3, deleteFiles } = require('../lib/utils');
 const { MYSQL_TABLE, WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC } = require('../lib/constants');
 
 // 完成录制
@@ -44,15 +44,21 @@ const completeRecordTask = (req, res) => {
         return ffmpegHelper(`${sourceFileName}.mp4`, fileName, ffmpegConfig)
           .then(({ outputFile }) => {
             willDeleteFiles.push(outputFile);
-            return uploadWebmToS3(outputFile, fileName, subS3Key);
+            return uploadFileToS3(outputFile, fileName, subS3Key);
           });
       };
+
+      const uploadS3 = () => uploadFileToS3(outputFile, `${sourceFileName}.mp4`, subS3Key);
+
+      if (partFileName === '') {
+        return uploadS3();
+      }
 
       return Promise.all([
         convAndUpload(`${partFileName}.mp4`, MP4_TO_SILENT),
         convAndUpload(`${partFileName}.aac`, MP4_TO_AAC),
       ])
-        .then(() => uploadWebmToS3(outputFile, `${sourceFileName}.mp4`, subS3Key))
+        .then(uploadS3)
     })
     .then(updateDB)
     .then(() => {
@@ -60,7 +66,7 @@ const completeRecordTask = (req, res) => {
       Object.keys(fileList).forEach(name => {
         const filePath = `${homedir}/Downloads/${name}`;
         writeFileSync(filePath, fileList[name], 'utf-8');
-        uploadWebmToS3(filePath, name, subS3Key);
+        uploadFileToS3(filePath, name, subS3Key);
         willDeleteFiles.push(filePath);
       });
     })

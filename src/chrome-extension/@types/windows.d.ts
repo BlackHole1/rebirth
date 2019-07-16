@@ -1,7 +1,7 @@
 interface Window {
   rebirth: {
     [key: string]: (...args: any[]) => void;
-    stop: (sourceFileName: string, partFileName: string) => void
+    stop: ({ originFileName, transformFileName }: { transformFileName?: string; originFileName?: string }) => void
     generateFile: (fileName: string, content: string) => void;
     setVideoBounds: ({ width, height }: { width: number, height: number }) => void;
   };

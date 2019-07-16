@@ -77,7 +77,7 @@ const client = s3.createClient({
     secretAccessKey: AWS_SECRET_ACCESS_KEY
   }
 });
-const uploadWebmToS3 = (localFilePath, fileName, subS3Key) => new Promise(resolve => {
+const uploadFileToS3 = (localFilePath, fileName, subS3Key) => new Promise(resolve => {
   const date = new Date();
   const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${subS3Key}/${fileName}`;
   const params = {
@@ -139,7 +139,7 @@ module.exports.ToString = ToString;
 module.exports.paramsToObj = paramsToObj;
 module.exports.log = log;
 module.exports.ffmpegHelper = ffmpegHelper;
-module.exports.uploadWebmToS3 = uploadWebmToS3;
+module.exports.uploadFileToS3 = uploadFileToS3;
 module.exports.deleteFiles = deleteFiles;
 module.exports.chromePath = isMac ? CHROME_PATH_MAC : CHROME_PATH_LINUX;
 module.exports.userDataPath = isMac ? USER_DATA_DIR_MAC : USER_DATA_DIR_LINUX;

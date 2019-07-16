@@ -18,6 +18,7 @@ console.log(`current NodeJs PID: ${process.pid}`);
 let status = false;
 const exit = () => {
   if (status) return;
+  console.log('k8s will kill me');
   status = true;
   rerecord(() => {
     process.exit();
