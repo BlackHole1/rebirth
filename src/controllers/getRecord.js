@@ -19,9 +19,9 @@ const getRecord = (req, res) => {
     })
     .then(async ([ data, conn ]) => {
       const flag = data.length === 0;
-      const hashList = data.map(({ task_hash }) => `'${task_hash}'`).join();
+      const idList = data.map(({ id }) => `'${id}'`).join();
       if (!flag) {
-        await conn.query(`UPDATE ${MYSQL_TABLE} SET status='recording' WHERE task_hash in (${hashList})`);
+        await conn.query(`UPDATE ${MYSQL_TABLE} SET status='recording' WHERE id in (${idList})`);
         recordTasks.setTask = data;
       }
       conn.release();
@@ -29,7 +29,7 @@ const getRecord = (req, res) => {
       const desc = flag ? undefined : 'getRecord';
       const info = flag ? undefined : {
         getRecordSQL: `SELECT t.* FROM ${MYSQL_TABLE} t WHERE status='waiting' LIMIT ${num}`,
-        updateRecordSQL: `UPDATE ${MYSQL_TABLE} SET status='recording', updated_by='rebirth' WHERE task_hash in (${hashList})`
+        updateRecordSQL: `UPDATE ${MYSQL_TABLE} SET status='recording', updated_by='rebirth' WHERE id in (${idList})`
       };
       res.sendJson(data, desc, info);
     })
@@ -40,7 +40,7 @@ const getRecord = (req, res) => {
         e,
         {
           getRecord: `SELECT t.* FROM ${MYSQL_TABLE} t WHERE status='waiting' LIMIT ${num}`,
-          updateRecord: `UPDATE ${MYSQL_TABLE} SET status='recording', updated_by='rebirth' WHERE task_hash in (?)`
+          updateRecord: `UPDATE ${MYSQL_TABLE} SET status='recording', updated_by='rebirth' WHERE id in (?)`
         }
       );
     })

@@ -7,7 +7,6 @@ const { chromePath, userDataPath } = require('./utils');
 const width = 1920;
 const height = 1080;
 const options = {
-  handleSIGTERM: false,
   headless: false,
   executablePath: chromePath,
   args: [

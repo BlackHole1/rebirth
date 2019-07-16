@@ -2,7 +2,7 @@ import { IAction, IActionHelper } from './rebirth';
 
 export type ITabs = {
   [key in string | number]: {
-    getHash: string;
+    dbId: number;
     action: IAction;
     mediaRecorder: MediaRecorder;
     videoWidth: number;

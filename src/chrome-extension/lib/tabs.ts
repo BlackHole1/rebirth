@@ -13,8 +13,8 @@ class Tabs {
     return this.tabs[id] || null;
   }
 
-  getHash (id: number) {
-    return (this.getTab(id) && this.getTab(id).getHash) ? this.getTab(id).getHash : null;
+  getDbId (id: number) {
+    return (this.getTab(id) && this.getTab(id).dbId) ? this.getTab(id).dbId : 0;
   }
 
   getMediaRecorder (id: number) {
@@ -30,15 +30,15 @@ class Tabs {
   }
 
   getSourceFileName (id: number) {
-    return (this.getTab(id) && this.getTab(id).sourceFileName) ? this.getTab(id).sourceFileName : this.getHash(id);
+    return (this.getTab(id) && this.getTab(id).sourceFileName) ? this.getTab(id).sourceFileName : 'sourceFileName_is_null';
   }
 
   getPartFileName (id: number) {
-    return (this.getTab(id) && this.getTab(id).partFileName) ? this.getTab(id).partFileName : this.getHash(id);
+    return (this.getTab(id) && this.getTab(id).partFileName) ? this.getTab(id).partFileName : 'partFileName_is_null';
   }
 
   getSubS3Key (id: number) {
-    return (this.getTab(id) && this.getTab(id).subS3Key) ? this.getTab(id).subS3Key : this.getHash(id);
+    return (this.getTab(id) && this.getTab(id).subS3Key) ? this.getTab(id).subS3Key : 's3_key_is_null';
   }
 
   getFileList (id: number) {
@@ -50,11 +50,11 @@ class Tabs {
     this.tabs[id].generateFileList = {};
   }
 
-  setHash (id: number, getHash: string) {
+  setDbId (id: number, dbId: number) {
     if (this.getTab(id) === null) {
       this.createTab(id);
     }
-    this.tabs[id].getHash = getHash;
+    this.tabs[id].dbId = dbId;
   }
 
   setAction (id: number, action: IAction) {

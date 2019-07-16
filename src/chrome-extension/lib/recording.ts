@@ -34,7 +34,7 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
     };
 
     mediaRecorder.onstop = () => {
-      const hash = tabs.getHash(id);
+      const dbId = tabs.getDbId(id);
       const sourceFileName = tabs.getSourceFileName(id);
       const partFileName = tabs.getPartFileName(id);
       const superBuffer = new Blob(recordedBlobs, blobOptions);
@@ -51,7 +51,7 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
           const videoWidth = tabs.getVideoWidth(id);
           const videoHeight = tabs.getVideoHeight(id);
           completeRecordTask({
-            hash,
+            dbId,
             sourceFileName,
             partFileName,
             subS3Key: tabs.getSubS3Key(id),
@@ -99,7 +99,7 @@ const stop = (id: number, mediaRecorder: MediaRecorder, sourceFileName: string, 
 
 // 录制失败
 const fail = (id: number): void => {
-  recordFail(tabs.getHash(id));
+  recordFail(tabs.getDbId(id));
   setTimeout(() => {
     chrome.tabs.remove(id);
   }, 2000);

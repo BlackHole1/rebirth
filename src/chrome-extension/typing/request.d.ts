@@ -1,8 +1,7 @@
 export type IRecord = {
   material_url: string;
   status: 'waiting' | 'recording' | 'record_complete' | 'aoc_consume';
-  task_hash: string;
+  id: number;
   merge_result_url: string;
-  screen_size: string;
   sub_s3_key: string;
 }[];

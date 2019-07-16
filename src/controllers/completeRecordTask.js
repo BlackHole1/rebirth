@@ -8,20 +8,20 @@ const { MYSQL_TABLE, WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC } = require('../lib/
 
 // 完成录制
 const completeRecordTask = (req, res) => {
-  const { hash, sourceFileName, partFileName, subS3Key, videoWidth, videoHeight, fileList } = req.body;
+  const { dbId, sourceFileName, partFileName, subS3Key, videoWidth, videoHeight, fileList } = req.body;
   let willDeleteFiles = [];
 
   const updateDB = s3URL => {
     mysqlService.getConnection()
       .then(async conn => {
-        const result = await conn.query(`UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE task_hash='${hash}' and merge_result_url is null`);
+        const result = await conn.query(`UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${dbId}' and merge_result_url is null`);
         conn.release();
-        recordTasks.completeTask = hash;
+        recordTasks.completeTask = dbId;
 
         res.sendJson(result , 'completeRecordTask', {
-          hash: hash,
+          dbId: dbId,
           s3URL: s3URL,
-          sql: `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE task_hash='${hash}' and merge_result_url is null`
+          sql: `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${dbId}' and merge_result_url is null`
         });
       })
       .catch(e => {
@@ -30,7 +30,7 @@ const completeRecordTask = (req, res) => {
           'update fail',
           e,
           {
-            sql: `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE task_hash='${hash}' and merge_result_url is null`
+            sql: `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${dbId}' and merge_result_url is null`
           }
         );
       });

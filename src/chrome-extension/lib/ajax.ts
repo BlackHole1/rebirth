@@ -15,7 +15,7 @@ export const getRecordTasks = (num: number): Promise<IRecord> => {
 
 // 完成录制
 export const completeRecordTask = (params: {
-  hash: string;
+  dbId: number;
   sourceFileName: string;
   partFileName: string;
   subS3Key: string;
@@ -30,8 +30,8 @@ export const completeRecordTask = (params: {
 };
 
 // 录制失败
-export const recordFail = (hash: string) => {
-  fetch(`${SERVER_URL}/recordFail?hash=${hash}`)
+export const recordFail = (id: number) => {
+  fetch(`${SERVER_URL}/recordFail?id=${id}`)
     .catch(e => {
       console.error(e);
     });

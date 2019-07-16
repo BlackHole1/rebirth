@@ -21,7 +21,7 @@ const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
         }, tab => {
           const id = tab.id;
           tabs.setAction(id, 'waiting');
-          tabs.setHash(id, record.task_hash);
+          tabs.setDbId(id, record.id);
           tabs.setSubS3Key(id, record.sub_s3_key);
         });
       });

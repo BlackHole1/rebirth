@@ -5,16 +5,16 @@ const { MYSQL_TABLE } = require('../lib/constants');
 
 // 录制失败
 const recordFail = (req, res) => {
-  const { hash } = req.query;
+  const { id } = req.query;
   mysqlService.getConnection()
     .then(async conn => {
-      const result = await conn.query(`UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE task_hash='${hash}'`);
+      const result = await conn.query(`UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE id='${id}'`);
       conn.release();
-      recordTasks.completeTask = hash;
+      recordTasks.completeTask = id;
 
       res.sendJson(result, 'recordFail', {
-        hash,
-        sql: `UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE task_hash='${hash}'`
+        id,
+        sql: `UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE id='${id}'`
       });
     })
     .catch(e => {
@@ -22,7 +22,7 @@ const recordFail = (req, res) => {
       res.sendError(
         'update fail',
         e,
-        `UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE task_hash='${hash}'`
+        `UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE id='${id}'`
       );
     });
 };

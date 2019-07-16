@@ -4,11 +4,11 @@ class RecordTasks {
   }
 
   set setTask(list) {
-    this.tasks = this.tasks.concat(list.map(({ material_url, task_hash }) => ({ material_url, task_hash })));
+    this.tasks = this.tasks.concat(list.map(({ material_url, id }) => ({ material_url, id })));
   }
 
-  set completeTask(task_hash) {
-    this.tasks = this.tasks.filter(task => !(task.task_hash === task_hash));
+  set completeTask(id) {
+    this.tasks = this.tasks.filter(task => !(task.id === id));
   }
 
   get getTasks() {
