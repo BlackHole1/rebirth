@@ -43,7 +43,7 @@ build_production_project:
   environment:
     name: production
   only:
-    - production
+    - master
 
 variables:
   IMAGE_PER_BRANCH_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_BUILD_REF
@@ -113,7 +113,7 @@ docker_build_production:
   environment:
     name: production
   only:
-    - production
+    - master
 
 .deploy_base: &DEPLOY_BASE
   stage: k8s_deploy
