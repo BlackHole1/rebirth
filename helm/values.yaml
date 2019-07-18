@@ -12,15 +12,6 @@ service:
   externalPort: 80
   internalPort: 80
 
-# ingress资源所需变量
-ingress:
-  hosts:
-    - rebirth
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-    ingress.kubernetes.io/ssl-redirect: "true"
-
 # gitlab-ci所需变量
 environment: ""
 

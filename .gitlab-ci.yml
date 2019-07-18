@@ -138,7 +138,6 @@ docker_build_production:
 .deploy: &DEPLOY
   <<: *DEPLOY_BASE
   script:
-    - if [ $CI_ENVIRONMENT_SLUG == 'staging' ]; then export HELM_ARGS="$HELM_ARGS,ingress.annotations.kubernetes\.io/ingress\.class=staging-nginx"; fi
     - if [ $DEPLOYS -eq 0 ]; then helm install $HELM_ARGS --name=$RELEASE_NAME helm; else helm upgrade $HELM_ARGS $RELEASE_NAME helm; fi
     - echo $RELEASE_NAME
     - echo $KUBE_CA_PEM
