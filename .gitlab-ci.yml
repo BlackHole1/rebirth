@@ -9,6 +9,7 @@ stages:
   stage: build_project
   script:
     - cd src
+    - npm config set registry https://repos.saybot.net/repository/alo7npm/
     - npm install
     - npm run build
   artifacts:

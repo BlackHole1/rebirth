@@ -1,28 +1,39 @@
-const mysqlService = require('../lib/mysql');
-const recordTasks = require('../lib/recordTasks');
-const { MYSQL_TABLE } = require('../lib/constants');
+const mysqlService = require('./mysql');
+const weblog = require('./weblog');
+const recordTasks = require('./recordTasks');
+const { setTaskStatusIsWaiting } = require('./SQLConstants');
+const utils = require('./utils');
 
 module.exports = (cb) => {
   let idList;
   if (typeof cb === 'function') {
     const tasks = recordTasks.getTasks;
-    if (tasks.length === 0) return;
+    if (tasks.length === 0) return cb();
     idList = tasks.map(task => `'${task.id}'`).join();
   } else {
     idList = [cb];
   }
 
-  console.log('will reRecord id list', idList);
+  weblog.sendLog('reRecode.ready', {
+    reRecodeList: idList.join()
+  });
 
   mysqlService.getConnection()
     .then(async conn => {
-      await conn.query(`UPDATE ${MYSQL_TABLE} SET status='waiting' WHERE id in (${idList})`);
+      await utils.SQLHandle(conn, setTaskStatusIsWaiting, 'setTaskStatusIsWaiting')(idList);
       conn.release();
     })
     .catch(e => {
-      console.error(e);
+      weblog.sendLog('reRecode.fail', {
+        reRecodeFailMessage: e.message,
+        reRecodeFailStack: e.stack || ''
+      });
+      cb();
     })
     .then(() => {
+      weblog.sendLog('reRecode.success', {
+        reRecodeList: idList.join()
+      });
       typeof cb === 'function' && cb();
     });
 };

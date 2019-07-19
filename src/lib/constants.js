@@ -15,6 +15,11 @@ module.exports.AWS_REGION = process.env.AWS_REGION;
 module.exports.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 module.exports.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 
+// dev alpha beta staging production（dev为本地调试的环境）
+module.exports.ENV = process.env.CI_ENVIRONMENT_SLUG || 'dev';
+module.exports.KIBANA_URL = process.env.KIBANA_URL || 'https://collector.alo7.com/1';
+module.exports.KIBANA_TOKEN = process.env.KIBANA_TOKEN || '6w72FEE5C73Me7octwQD2Lom';
+
 module.exports.CHROME_PATH_MAC = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 module.exports.CHROME_PATH_LINUX = '/usr/bin/google-chrome-stable';
 
@@ -32,7 +37,7 @@ module.exports.MP4_TO_SILENT = [
   '-an',
   '-vcodec copy'
 ];
-module.exports.MP4_TO_AAC =[
+module.exports.MP4_TO_AAC = [
   '-vn',
   '-acodec libfdk_aac',
   '-b:a 200k'

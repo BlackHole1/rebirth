@@ -1,7 +1,9 @@
 const mysqlService = require('../lib/mysql');
 const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
-const { MYSQL_TABLE } = require('../lib/constants');
+const weblog = require('../lib/weblog');
+const utils = require('../lib/utils');
+const { getTasks, setTaskStatusIsRecording } = require('../lib/SQLConstants');
 
 const getRecord = (req, res) => {
   // 如果已经有服务挂了，则不要再返回录制任务了
@@ -14,35 +16,27 @@ const getRecord = (req, res) => {
 
   mysqlService.getConnection()
     .then(async conn => {
-      const result = await conn.query(`SELECT t.* FROM ${MYSQL_TABLE} t WHERE status='waiting' and deleted=0 LIMIT ${num}`);
+      const result = await utils.SQLHandle(conn, getTasks, 'getTasks')(num);
       return [ result, conn ];
     })
     .then(async ([ data, conn ]) => {
       const flag = data.length === 0;
       const idList = data.map(({ id }) => `'${id}'`).join();
       if (!flag) {
-        await conn.query(`UPDATE ${MYSQL_TABLE} SET status='recording' WHERE id in (${idList})`);
+        await utils.SQLHandle(conn, setTaskStatusIsRecording, 'setTaskStatusIsRecording')(idList);
         recordTasks.setTask = data;
       }
-      conn.release();
 
-      const desc = flag ? undefined : 'getRecord';
-      const info = flag ? undefined : {
-        getRecordSQL: `SELECT t.* FROM ${MYSQL_TABLE} t WHERE status='waiting' LIMIT ${num}`,
-        updateRecordSQL: `UPDATE ${MYSQL_TABLE} SET status='recording', updated_by='rebirth' WHERE id in (${idList})`
-      };
-      res.sendJson(data, desc, info);
+      conn.release();
+      res.sendJson(data);
     })
     .catch(e => {
       servicesStatus.setMysqlError = true;
-      res.sendError(
-        'get record or update record fail',
-        e,
-        {
-          getRecord: `SELECT t.* FROM ${MYSQL_TABLE} t WHERE status='waiting' LIMIT ${num}`,
-          updateRecord: `UPDATE ${MYSQL_TABLE} SET status='recording', updated_by='rebirth' WHERE id in (?)`
-        }
-      );
+      weblog.sendLog('getRecords.fail', {
+        getRecordsFailMessage: e.message,
+        getRecordsFailStack: e.stack || ''
+      }, 'error');
+      res.sendError();
     })
 };
 

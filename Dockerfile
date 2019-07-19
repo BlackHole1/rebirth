@@ -55,6 +55,7 @@ WORKDIR /etc/www
 # 配置开发环境
 RUN npm install -g node-gyp
 COPY src ./
+RUN npm config set registry https://repos.saybot.net/repository/alo7npm/
 RUN npm install --production
 
 COPY ffmpeg_sources/ /usr/local/bin

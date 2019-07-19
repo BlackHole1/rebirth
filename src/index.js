@@ -3,10 +3,12 @@ const handleRequest = require('./lib/handleRequest');
 const startChrome = require('./lib/startChrome');
 const rerecord = require('./lib/rerecord');
 const { PORT } = require('./lib/constants');
+const weblog = require('./lib/weblog');
 
 const server = http.createServer(handleRequest);
 
 server.listen(PORT, () => {
+  weblog.sendLog('server.start');
   console.log(`Server running at http://127.0.0.1:${PORT}/`);
 });
 
@@ -14,20 +16,23 @@ server.listen(PORT, () => {
 startChrome();
 
 // 当接收到k8s发来的关闭请求时，做出处理
-console.log(`current NodeJs PID: ${process.pid}`);
 let status = false;
-const exit = () => {
+const exit = (message) => {
   if (status) return;
-  console.log('k8s will kill me');
+  weblog.sendLog('process.kill', {
+    killMessage: message
+  });
   status = true;
   rerecord(() => {
-    process.exit();
+    weblog.sendAllLog(() => {
+      process.exit();
+    })
   });
 };
-process.once('exit', exit);
-process.once('SIGTERM', exit);
+process.once('exit', () => exit('exit'));
+process.once('SIGTERM', () => exit('sigterm'));
 process.on('message', message => {
   if (message === 'shutdown') {
-    exit();
+    exit(message);
   }
 });

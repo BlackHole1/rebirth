@@ -33,7 +33,7 @@ spec:
             value: {{ $value | replace "__string__" "" |  quote }}
         {{- end }}
         livenessProbe:
-          initialDelaySeconds: 30
+          initialDelaySeconds: 10
           timeoutSeconds: 5
           httpGet:
             port: 80

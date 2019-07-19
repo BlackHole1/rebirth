@@ -1,29 +1,28 @@
 const mysqlService = require('../lib/mysql');
 const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
-const { MYSQL_TABLE } = require('../lib/constants');
+const weblog = require('../lib/weblog');
+const utils = require('../lib/utils');
+const { setTaskStatusIsRecordFail } = require('../lib/SQLConstants');
 
 // 录制失败
 const recordFail = (req, res) => {
   const { id } = req.query;
   mysqlService.getConnection()
     .then(async conn => {
-      const result = await conn.query(`UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE id='${id}'`);
+      const result = await utils.SQLHandle(conn, setTaskStatusIsRecordFail, 'setTaskStatusIsRecordFail')(id);
       conn.release();
       recordTasks.completeTask = id;
 
-      res.sendJson(result, 'recordFail', {
-        id,
-        sql: `UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE id='${id}'`
-      });
+      res.sendJson(result);
     })
     .catch(e => {
       servicesStatus.setMysqlError = true;
-      res.sendError(
-        'update fail',
-        e,
-        `UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE id='${id}'`
-      );
+      weblog.sendLog('recordFail.fail', {
+        recordFailMessage: e.message,
+        recordFailStack: e.stack || ''
+      });
+      res.sendError();
     });
 };
 

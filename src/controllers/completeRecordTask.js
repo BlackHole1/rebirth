@@ -4,8 +4,10 @@ const mysqlService = require('../lib/mysql');
 const rerecord = require('../lib/rerecord');
 const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
-const { ffmpegHelper, uploadFileToS3, deleteFiles } = require('../lib/utils');
-const { MYSQL_TABLE, WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC } = require('../lib/constants');
+const weblog = require('../lib/weblog');
+const utils = require('../lib/utils');
+const { setTaskStatusIsComplete } = require('../lib/SQLConstants');
+const { WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC } = require('../lib/constants');
 
 // 完成录制
 const completeRecordTask = (req, res) => {
@@ -15,41 +17,35 @@ const completeRecordTask = (req, res) => {
   const updateDB = s3URL => {
     mysqlService.getConnection()
       .then(async conn => {
-        const result = await conn.query(`UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${dbId}' and merge_result_url is null`);
+        const result = await utils.SQLHandle(conn, setTaskStatusIsComplete, 'setTaskStatusIsComplete')(s3URL, dbId);
         conn.release();
         recordTasks.completeTask = dbId;
 
-        res.sendJson(result , 'completeRecordTask', {
-          dbId: dbId,
-          s3URL: s3URL,
-          sql: `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${dbId}' and merge_result_url is null`
-        });
+        res.sendJson(result);
       })
       .catch(e => {
         servicesStatus.setMysqlError = true;
-        res.sendError(
-          'update fail',
-          e,
-          {
-            sql: `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${dbId}' and merge_result_url is null`
-          }
-        );
+        weblog.sendLog('completeRecord.fail', {
+          completeRecordFailMessage: e.message,
+          completeRecordFailStack: e.stack || ''
+        });
+        res.sendError();
       });
   };
 
-  ffmpegHelper(`${sourceFileName}.webm`, `${sourceFileName}.mp4`, WEBM_TO_MP4(videoWidth, videoHeight))
+  utils.ffmpegHelper(`${sourceFileName}.webm`, `${sourceFileName}.mp4`, WEBM_TO_MP4(videoWidth, videoHeight), req.body)
     .then(({ inputFile, outputFile }) => {
       willDeleteFiles.push(inputFile, outputFile);
 
       const convAndUpload = (fileName, ffmpegConfig) => {
-        return ffmpegHelper(`${sourceFileName}.mp4`, fileName, ffmpegConfig)
+        return utils.ffmpegHelper(`${sourceFileName}.mp4`, fileName, ffmpegConfig, req.body)
           .then(({ outputFile }) => {
             willDeleteFiles.push(outputFile);
-            return uploadFileToS3(outputFile, fileName, subS3Key);
+            return utils.uploadFileToS3(outputFile, fileName, subS3Key, req.body);
           });
       };
 
-      const uploadS3 = () => uploadFileToS3(outputFile, `${sourceFileName}.mp4`, subS3Key);
+      const uploadS3 = () => utils.uploadFileToS3(outputFile, `${sourceFileName}.mp4`, subS3Key, req.body);
 
       if (partFileName === '') {
         return uploadS3();
@@ -67,11 +63,11 @@ const completeRecordTask = (req, res) => {
       Object.keys(fileList).forEach(name => {
         const filePath = `${homedir}/Downloads/${name}`;
         writeFileSync(filePath, fileList[name], 'utf-8');
-        uploadFileToS3(filePath, name, subS3Key);
+        utils.uploadFileToS3(filePath, name, subS3Key, req.body);
         willDeleteFiles.push(filePath);
       });
     })
-    .then(() => deleteFiles(willDeleteFiles))
+    .then(() => utils.deleteFiles(willDeleteFiles, req.body))
     .catch(() => {
       rerecord(dbId);
     });

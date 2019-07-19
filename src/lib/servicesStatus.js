@@ -1,3 +1,5 @@
+const weblog = require('./weblog');
+
 class ServicesStatus {
   constructor() {
     this.chromeClose = false;
@@ -12,6 +14,9 @@ class ServicesStatus {
   }
 
   set setChromeClose (val) {
+    weblog.sendLog('servicesStatus.chromeClose', {
+      servicesStatus_chromeClose: val
+    });
     this.chromeClose = val;
   }
 
@@ -20,6 +25,9 @@ class ServicesStatus {
   }
 
   set setChromeError (val) {
+    weblog.sendLog('servicesStatus.chromeError', {
+      servicesStatus_chromeError: val
+    });
     this.chromeError = val;
   }
 
@@ -28,6 +36,9 @@ class ServicesStatus {
   }
 
   set setMysqlError (val) {
+    weblog.sendLog('servicesStatus.mysqlError', {
+      servicesStatus_mysqlError: val
+    });
     this.mysqlError = val;
   }
 
@@ -36,6 +47,9 @@ class ServicesStatus {
   }
 
   set setChromeRemoteDebugError (val) {
+    weblog.sendLog('servicesStatus.chromeRemoteDebugError', {
+      servicesStatus_chromeRemoteDebugError: val
+    });
     this.chromeRemoteDebugError = val;
   }
 
@@ -44,7 +58,10 @@ class ServicesStatus {
   }
 
   set setChromeCrash (val) {
-    return this.chromeCrash = val;
+    weblog.sendLog('servicesStatus.chromeCrash', {
+      servicesStatus_chromeCrash: val
+    });
+    this.chromeCrash = val;
   }
 
   get isNormal () {
