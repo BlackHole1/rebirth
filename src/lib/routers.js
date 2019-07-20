@@ -3,6 +3,7 @@ const servicesStatus = require('./servicesStatus');
 const getRecord = require('../controllers/getRecord');
 const completeRecordTask = require('../controllers/completeRecordTask');
 const recordFail = require('../controllers/recordFail');
+const logHandle = require('../controllers/logHandle');
 
 module.exports =  (req, res) => {
   const router = {
@@ -18,6 +19,9 @@ module.exports =  (req, res) => {
     },
     '/recordFail': (req, res) => {
       recordFail(req, res);
+    },
+    '/logHandle': (req, res) => {
+      logHandle(req, res);
     },
     '/liveness': (req, res) => {
       const statusCode = servicesStatus.isNormal ? 200 : 500;

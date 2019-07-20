@@ -72,12 +72,14 @@ class Utils {
       ffmpeg(inputFile)
         .on('start', (commandLine) => {
           weblog.sendLog('ffmpeg.start', {
+            dbId: ffmpegOtherInfo.dbId,
             ffmpegCommand: commandLine,
             ffmpegOtherInfo
           });
         })
         .on('error', (err) => {
           weblog.sendLog('ffmpeg.error', {
+            dbId: ffmpegOtherInfo.dbId,
             ffmpegInputFile: inputName,
             ffmpegOutputFile: outputName,
             ffmpegErr: err.message,
@@ -87,6 +89,7 @@ class Utils {
         })
         .on('end', function() {
           weblog.sendLog('ffmpeg.end', {
+            dbId: ffmpegOtherInfo.dbId,
             ffmpegInputFile: inputName,
             ffmpegOutputFile: outputName,
             ffmpegOtherInfo
@@ -104,6 +107,7 @@ class Utils {
   uploadFileToS3 (localFilePath, fileName, subS3Key, uploadFileOtherInfo) {
     return new Promise(resolve => {
       const baseLogData = {
+        dbId: uploadFileOtherInfo.dbId,
         uploadFileName: fileName,
         uploadLocalFilePath: localFilePath,
         uploadFileOtherInfo
@@ -130,7 +134,7 @@ class Utils {
           ...baseLogData,
           uploadFailMessage: err.message,
           uploadFailStack: err.stack || '',
-        });
+        }, 'error');
       });
       uploader.on('end', () => {
         const s3URL = `https://s3.${AWS_REGION}.amazonaws.com.cn/${AWS_BUCKET}/${path}`;
@@ -146,6 +150,7 @@ class Utils {
   deleteFiles (fileList, deleteFilesOtherInfo) {
     return Promise.all(fileList.map(file => new Promise(resolve => {
       const baseLogData = {
+        dbId: deleteFilesOtherInfo.dbId,
         deleteFilesOtherInfo,
         deleteFile: file
       };
@@ -155,7 +160,7 @@ class Utils {
           weblog.sendLog('deleteFile.fail', {
             ...baseLogData,
             deleteFileFail: e
-          });
+          }, 'error');
         } else {
           weblog.sendLog('deleteFile.success', baseLogData);
         }

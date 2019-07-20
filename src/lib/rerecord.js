@@ -27,7 +27,7 @@ module.exports = (cb) => {
       weblog.sendLog('reRecode.fail', {
         reRecodeFailMessage: e.message,
         reRecodeFailStack: e.stack || ''
-      });
+      }, 'error');
       cb();
     })
     .then(() => {

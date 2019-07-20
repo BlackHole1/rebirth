@@ -1,11 +1,21 @@
+import { sendLog } from './ajax';
+
 export const randomNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 // 检测文件是否下载完成
-export const fileDownloadDone = (filenameRegex: string) => {
+export const fileDownloadDone = (filenameRegex: string, dbId: number) => {
+  sendLog('checkFileDownload', {
+    dbId,
+    filenameRegex
+  });
   return new Promise((resolve) => {
     const timeoutId = setTimeout(() => {
+      sendLog('checkFileDownload.timeout', {
+        dbId,
+        filenameRegex
+      }, 'warn');
       resolve();
     }, 1000 * 30);
 
@@ -16,6 +26,11 @@ export const fileDownloadDone = (filenameRegex: string) => {
         if (downloadItem.length !== 0 && downloadItem[0].state === 'complete') {
           clearTimeout(timeoutId);
           setTimeout(() => {
+            sendLog('checkFileDownload.done', {
+              dbId,
+              filenameRegex,
+              downloadInfo: downloadItem[0]
+            });
             resolve();
           }, 1000 * 3); // 这里加延迟，是因为我还是不太放心，加个延迟保证文件确实下载好了
         } else {

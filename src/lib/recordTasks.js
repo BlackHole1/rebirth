@@ -27,6 +27,7 @@ class RecordTasks {
 
     if (Object.keys(completeTask).length !== 0) {
       weblog.sendLog('recordTasks.completeTask', {
+        dbId: id,
         recordTasks_task: completeTask
       });
     }

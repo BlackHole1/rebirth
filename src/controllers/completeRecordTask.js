@@ -26,9 +26,10 @@ const completeRecordTask = (req, res) => {
       .catch(e => {
         servicesStatus.setMysqlError = true;
         weblog.sendLog('completeRecord.fail', {
+          dbId,
           completeRecordFailMessage: e.message,
           completeRecordFailStack: e.stack || ''
-        });
+        }, 'error');
         res.sendError();
       });
   };

@@ -1,6 +1,7 @@
 import { ITabs } from '../typing/background';
 import { IAction } from '../typing/rebirth';
 import { RecordNumber } from './constants';
+import { sendLog } from './ajax';
 
 class Tabs {
   private readonly tabs: ITabs;
@@ -64,6 +65,11 @@ class Tabs {
     if (action !== this.tabs[id].action) {
       this.tabs[id].action = action;
     }
+
+    sendLog('setAction', {
+      actionName: action,
+      dbId: this.getDbId(id),
+    });
   }
 
   setMediaRecorder (id: number, mediaRecorder: MediaRecorder) {
@@ -131,15 +137,18 @@ class Tabs {
   }
 
   getFreeNumber () {
-    return RecordNumber - (Object.keys(this.tabs).filter(tab => {
+    const result = RecordNumber - (Object.keys(this.tabs).filter(tab => {
       return this.tabs[tab].action !== 'stop';
     }).length);
+
+    sendLog('tabs.getFreeNumber', {
+      freeNumber: result
+    });
+
+    return result;
   }
 }
 
 const tabs = new Tabs();
-
-// @ts-ignore
-window.tabs = tabs;
 
 export default tabs;

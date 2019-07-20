@@ -29,7 +29,7 @@ module.exports = () => {
             weblog.sendLog('listenCrash.error', {
               listenCrashErrorMessage: e.message,
               listenCrashErrorStack: e.stack || ''
-            });
+            }, 'error');
             servicesStatus.setChromeRemoteDebugError = true;
           }
         });

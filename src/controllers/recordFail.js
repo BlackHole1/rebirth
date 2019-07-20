@@ -19,9 +19,10 @@ const recordFail = (req, res) => {
     .catch(e => {
       servicesStatus.setMysqlError = true;
       weblog.sendLog('recordFail.fail', {
+        dbId: id,
         recordFailMessage: e.message,
         recordFailStack: e.stack || ''
-      });
+      }, 'error');
       res.sendError();
     });
 };

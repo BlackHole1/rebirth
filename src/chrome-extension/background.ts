@@ -1,4 +1,4 @@
-import { getRecordTasks } from './lib/ajax';
+import { getRecordTasks, sendLog } from './lib/ajax';
 import { IRecord } from './typing/request';
 import tabs from './lib/tabs';
 import { RecordNumber } from './lib/constants';
@@ -20,14 +20,20 @@ const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
           url: record.material_url
         }, tab => {
           const id = tab.id;
-          tabs.setAction(id, 'waiting');
           tabs.setDbId(id, record.id);
+          tabs.setAction(id, 'waiting');
           tabs.setSubS3Key(id, record.sub_s3_key);
+          sendLog('openURL', {
+            dbId: record.id,
+            recordInfo: record
+          });
         });
       });
     })
     .catch(e => {
-      console.error(e);
+      sendLog('getRecordTasks.fail', {
+        getRecordTasksFail: e
+      }, 'error');
     });
 };
 
@@ -42,7 +48,6 @@ setTimeout(() => {
     if (getFreeNumber === 0) return;
     getRecordTasksAndStartTab(getFreeNumber);
   }, randomNumber(1000 * 60, 3000 * 60));
-
 }, randomNumber(1000, 3000 * 10));
 
 // 监听网页消息
@@ -50,6 +55,13 @@ chrome.runtime.onConnect.addListener(port => {
   port.onMessage.addListener((data: IData) => {
     const currentTabId = port.sender.tab.id;
     const params = [ currentTabId, tabs.getMediaRecorder(currentTabId) ];
+
+    if ([ 'start', 'stop', 'pause', 'resume', 'fail', 'generateFile', 'setVideoBounds' ].includes(data.action)) {
+      sendLog(`${data.action}.action`, {
+        [`${data.action}ActionInfo`]: data,
+        dbId: tabs.getDbId(currentTabId)
+      });
+    }
 
     if ([ 'pause', 'resume', 'fail' ].includes(data.action)) {
       actions[data.action](...params);

@@ -1,7 +1,7 @@
 import tabs from './tabs';
 import recordingQueue from './recordingQueue';
 import { captureConfig, mediaRecorderOptions, blobOptions } from './config';
-import { completeRecordTask, recordFail } from './ajax';
+import { completeRecordTask, recordFail, sendLog } from './ajax';
 import { fileDownloadDone } from './utils';
 
 // 开始录屏
@@ -21,6 +21,12 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
       chrome.tabs.sendMessage(id, {
         error: chrome.runtime.lastError
       });
+
+      sendLog('capture.fail', {
+        dbId: tabs.getDbId(id),
+        captureError: chrome.runtime.lastError
+      }, 'error');
+
       return false;
     }
 
@@ -46,7 +52,7 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
       link.setAttribute('download', `${sourceFileName}.webm`);
       link.click();
 
-      fileDownloadDone(sourceFileName)
+      fileDownloadDone(sourceFileName, dbId)
         .then(() => {
           const videoWidth = tabs.getVideoWidth(id);
           const videoHeight = tabs.getVideoHeight(id);
@@ -60,7 +66,13 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
             videoHeight: videoHeight === 0 ? pageHeight: videoHeight
           });
         })
-        .catch(() => {});
+        .catch((e) => {
+          sendLog('fileDownload.fail', {
+            dbId,
+            sourceFileName,
+            fileDownloadFailMessage: e.message
+          }, 'error');
+        });
 
       setTimeout(() => {
         chrome.tabs.remove(id);
