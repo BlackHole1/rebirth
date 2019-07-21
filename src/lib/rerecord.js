@@ -11,11 +11,11 @@ module.exports = (cb) => {
     if (tasks.length === 0) return cb();
     idList = tasks.map(task => `'${task.id}'`).join();
   } else {
-    idList = [cb];
+    idList = [cb].join();
   }
 
   weblog.sendLog('reRecode.ready', {
-    reRecodeList: idList.join()
+    reRecodeList: idList
   });
 
   mysqlService.getConnection()
@@ -32,7 +32,7 @@ module.exports = (cb) => {
     })
     .then(() => {
       weblog.sendLog('reRecode.success', {
-        reRecodeList: idList.join()
+        reRecodeList: idList
       });
       typeof cb === 'function' && cb();
     });

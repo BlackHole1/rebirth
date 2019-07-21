@@ -1,4 +1,16 @@
-window.rebirth = Object.create(null);
+type rebirth = {
+  [key: string]: (...args: any[]) => void;
+  stop: ({ originFileName, transformFileName }: { transformFileName?: string; originFileName?: string }) => void
+  generateFile: (fileName: string, content: string) => void;
+  setVideoBounds: ({ width, height }: { width: number, height: number }) => void;
+  getInfo: () => Record<string, any>;
+};
+
+interface Window {
+  rebirth: rebirth
+}
+
+window.rebirth = {} as rebirth;
 
 [ 'pause', 'resume', 'fail' ].forEach((m) => {
   window.rebirth[m] = () => {
@@ -38,5 +50,17 @@ window.rebirth = Object.create(null);
       videoWidth: width,
       videoHeight: height
     }, '*');
+  };
+
+  window.rebirth.getInfo = () => {
+    const result = localStorage.getItem('rebirth-ready-info');
+
+    try {
+      return JSON.parse(result);
+    } catch (e) {
+      return {
+        dbId: 0
+      };
+    }
   };
 });

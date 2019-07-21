@@ -88,5 +88,14 @@ chrome.runtime.onConnect.addListener(port => {
       tabs.setVideoWidth(currentTabId, data.videoWidth);
       tabs.setVideoHeight(currentTabId, data.videoHeight);
     }
+
+    if (data.action === 'ready') {
+      port.postMessage({
+        type: 'ready',
+        info: {
+          dbId: tabs.getDbId(currentTabId),
+        }
+      });
+    }
   });
 });
