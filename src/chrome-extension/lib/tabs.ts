@@ -2,6 +2,7 @@ import { ITabs } from '../typing/background';
 import { IAction } from '../typing/rebirth';
 import { RecordNumber } from './constants';
 import { sendLog } from './ajax';
+import { makeID } from './utils';
 
 class Tabs {
   private readonly tabs: ITabs;
@@ -102,7 +103,7 @@ class Tabs {
       this.createTab(id);
     }
     if (sourceFileName !== this.tabs[id].sourceFileName) {
-      this.tabs[id].sourceFileName = sourceFileName;
+      this.tabs[id].sourceFileName = makeID(8) + sourceFileName;
     }
   }
 
@@ -111,7 +112,7 @@ class Tabs {
       this.createTab(id);
     }
     if (partFileName !== this.tabs[id].partFileName) {
-      this.tabs[id].partFileName = partFileName;
+      this.tabs[id].partFileName = makeID(8) + partFileName;
     }
   }
 
@@ -129,7 +130,7 @@ class Tabs {
       this.createTab(id);
     }
 
-    this.tabs[id].generateFileList[data.name] = data.content;
+    this.tabs[id].generateFileList[makeID(8) + data.name] = data.content;
   }
 
   deleteTab (id: number) {

@@ -42,6 +42,16 @@ export const fileDownloadDone = (filenameRegex: string, dbId: number) => {
   });
 };
 
+export const makeID = (length: number) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for ( let i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
 export const fetchPost = (url: string, data: Record<string, any>) => {
   return fetch(url, {
     body: JSON.stringify(data),

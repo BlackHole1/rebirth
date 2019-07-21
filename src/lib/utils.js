@@ -114,7 +114,7 @@ class Utils {
       };
 
       const date = new Date();
-      const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${subS3Key}/${fileName}`;
+      const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${subS3Key}/${fileName.substring(8)}`;
       const params = {
         localFile: localFilePath,
         s3Params: {
