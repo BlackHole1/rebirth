@@ -22,5 +22,5 @@ module.exports.setTaskStatusIsFail = (id) => {
 
 // 完成录制
 module.exports.setTaskStatusIsComplete = (s3URL, dbId) => {
-  return `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${dbId}' and merge_result_url is null`;
+  return `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${dbId}'`;
 };
