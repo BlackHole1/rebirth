@@ -7,12 +7,12 @@ module.exports.getTasks = (num) => {
 
 // 设置开始录制状态
 module.exports.setTaskStatusIsRecording = (idList) => {
-  return `UPDATE ${MYSQL_TABLE} SET status='recording' WHERE id in (${idList})`;
+  return `UPDATE ${MYSQL_TABLE} SET status='recording', updated_by='rebirth' WHERE id in (${idList})`;
 };
 
 // 重新录制
 module.exports.setTaskStatusIsWaiting = (idList) => {
-  return `UPDATE ${MYSQL_TABLE} SET status='waiting' WHERE id in (${idList})`;
+  return `UPDATE ${MYSQL_TABLE} SET status='waiting', updated_by='rebirth' WHERE id in (${idList})`;
 };
 
 // 录制失败
