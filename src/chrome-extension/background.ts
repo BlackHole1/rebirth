@@ -67,12 +67,12 @@ const pollActiveTab = (tabs: number[]) => new Promise(resolve => {
   }
 
   // 激活下一个标签页
-  const next = (fun: any) =>  {
+  const next = (fun: () => void) =>  {
     setTimeout(() => {
       recordingQueue.enqueue(() => {
         fun();
       });
-    }, 200);
+    }, 2000);
   };
 
   // 激活标签页
@@ -87,7 +87,7 @@ const pollActiveTab = (tabs: number[]) => new Promise(resolve => {
           return resolve();
         }
         next(activeTab);
-      }, 200);
+      }, 2000);
     });
   };
   next(activeTab);
