@@ -50,6 +50,54 @@ setTimeout(() => {
   }, randomNumber(1000 * 60, 3000 * 60));
 }, randomNumber(1000, 3000 * 10));
 
+// 轮询tab页，chrome会对非激活的tab也进行一个资源压缩
+const getTabs = () => new Promise((resolve) => {
+  chrome.tabs.query({}, (tabs) => {
+    resolve(tabs.map(tab => tab.id));
+  });
+});
+
+// 轮询激活标签页
+const pollActiveTab = (tabs: number[]) => new Promise(resolve => {
+  const tabLength = tabs.length;
+  let tabIndex = 0;
+
+  if (tabLength === 1) {
+    return resolve();
+  }
+
+  // 激活下一个标签页
+  const next = (fun: any) =>  {
+    setTimeout(() => {
+      recordingQueue.enqueue(() => {
+        fun();
+      });
+    }, 200);
+  };
+
+  // 激活标签页
+  const activeTab = () => {
+    chrome.tabs.update(tabs[tabIndex], {
+      active: true
+    }, () => {
+      recordingQueue.complete();
+      setTimeout(() => {
+        tabIndex++;
+        if (tabIndex === tabLength) {
+          return resolve();
+        }
+        next(activeTab);
+      }, 200);
+    });
+  };
+  next(activeTab);
+});
+
+// 开始循环激活
+(function poll() {
+  getTabs().then(pollActiveTab).then(poll).catch(() => {});
+})();
+
 // 监听网页消息
 chrome.runtime.onConnect.addListener(port => {
   port.onMessage.addListener((data: IData) => {

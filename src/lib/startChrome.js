@@ -22,6 +22,7 @@ const options = {
     '--no-sandbox',
     '--disable-setuid-sandbox',
     '--disable-dev-shm-usage',
+    '--disable-background-timer-throttling',
     `--window-size=${width},${height}`,
     '--unsafely-treat-insecure-origin-as-secure=http://127.0.0.1',
     `--user-data-dir=${utils.userDataPath()}`,
