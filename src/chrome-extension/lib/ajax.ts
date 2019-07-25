@@ -1,6 +1,6 @@
 // 向服务获取要录制的网站
 import { IRecord } from '../typing/request';
-import { fetchPost } from './utils';
+import { arrayToObject, fetchPost } from './utils';
 
 // 发送日志到server，由server转发到kibana
 export const sendLog = (name: string, payload: Record<string, any>, level: 'debug' | 'info' | 'warn' | 'error' = 'info') => {
@@ -22,7 +22,7 @@ export const getRecordTasks = (num: number): Promise<IRecord> => {
         const data: IRecord = await resp.json();
         sendLog('ajax.getRecordTasks', {
           tasksNum: num,
-          taskData: data,
+          tasksList: arrayToObject(data),
           respStatus: resp.ok
         });
         return resp.ok ? resolve(data) : reject(data);

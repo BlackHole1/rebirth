@@ -1,3 +1,4 @@
+const utils =  require('../lib/utils');
 const weblog = require('./weblog');
 
 class RecordTasks {
@@ -6,7 +7,7 @@ class RecordTasks {
   }
 
   set setTask(list) {
-    const listMainInfo = list.map(({ material_url, id }) => ({ material_url, id }));
+    const listMainInfo = list.map(({ material_url, id }) => ({ material_url, id: Number(id) }));
     this.tasks = this.tasks.concat(listMainInfo);
 
     weblog.sendLog('recordTasks.setTask', {
@@ -15,9 +16,10 @@ class RecordTasks {
   }
 
   set completeTask(id) {
+    const dbId = Number(id);
     let completeTask = {};
     this.tasks = this.tasks.filter(task => {
-      const result = (task.id === id);
+      const result = (task.id === dbId);
       if (result) {
         completeTask = task;
       }
@@ -28,7 +30,8 @@ class RecordTasks {
     if (Object.keys(completeTask).length !== 0) {
       weblog.sendLog('recordTasks.completeTask', {
         dbId: id,
-        recordTasks_task: completeTask
+        recordTasks_complete_task: completeTask,
+        recordTasks_task: utils.arrayToObject(this.tasks)
       });
     }
   }
