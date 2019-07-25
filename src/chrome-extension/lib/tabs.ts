@@ -112,7 +112,7 @@ class Tabs {
       this.createTab(id);
     }
     if (partFileName !== this.tabs[id].partFileName) {
-      this.tabs[id].partFileName = makeID(8) + partFileName;
+      this.tabs[id].partFileName = partFileName ? makeID(8) + partFileName : '';
     }
   }
 

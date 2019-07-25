@@ -54,7 +54,7 @@ variables:
 .docker: &DOCKER
   image: docker:latest
   services:
-    - name: docker:dind
+    - name: docker:18-dind
       command: ["--registry-mirror", "https://ixceb9no.mirror.aliyuncs.com"]
   before_script:
     - echo "nameserver 114.114.114.114" >> /etc/resolv.conf
