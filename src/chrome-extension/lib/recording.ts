@@ -16,7 +16,9 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
   // 开始进行录屏，加上ts-ignore，是因为@types/chrome package还没更新，导致其类型是错误的
   // @ts-ignore
   chrome.tabCapture.capture(captureConfig(pageWidth, pageHeight), stream => {
-    recordingQueue.complete();
+    setTimeout(() => {
+      recordingQueue.complete();
+    }, 2000);
     if (stream === null) {
       chrome.tabs.sendMessage(id, {
         error: chrome.runtime.lastError
