@@ -31,6 +31,9 @@ build_beta_project:
     name: beta
   only:
     - beta
+  except:
+    variables:
+      - $AUTO_EXPANSION_POD =~ /true/
 
 build_staging_project:
   <<: *BUILD_PROJECT
@@ -97,6 +100,9 @@ docker_build_beta:
     name: beta
   only:
     - beta
+  except:
+    variables:
+      - $AUTO_EXPANSION_POD =~ /true/
 
 docker_build_staging:
   <<: *DOCKER_BUILD
@@ -135,6 +141,7 @@ docker_build_production:
     - export HELM_ARGS="--namespace=$KUBE_NAMESPACE --tiller-namespace $KUBE_NAMESPACE -f helm/values.yaml --set ${HELM_ENVS}environment=$CI_ENVIRONMENT_SLUG,image.repository=$CI_REGISTRY_IMAGE/${CI_BUILD_REF_NAME},image.tag=$CI_BUILD_REF",replicaCount=${REPLICA_COUNT:-3}
   tags:
     - docker
+
 
 .deploy: &DEPLOY
   <<: *DEPLOY_BASE
@@ -214,6 +221,9 @@ stop_beta:
     action: stop
   only:
     - beta
+  except:
+    variables:
+      - $AUTO_EXPANSION_POD =~ /true/
 
 stop_staging:
   <<: *STOP
