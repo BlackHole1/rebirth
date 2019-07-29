@@ -18,7 +18,7 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
   chrome.tabCapture.capture(captureConfig(pageWidth, pageHeight), stream => {
     setTimeout(() => {
       recordingQueue.complete();
-    }, 2000);
+    }, 1000 * 3);
     if (stream === null) {
       chrome.tabs.sendMessage(id, {
         error: chrome.runtime.lastError
@@ -64,8 +64,8 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
             partFileName,
             subS3Key: tabs.getSubS3Key(id),
             fileList: tabs.getFileList(id),
-            videoWidth: videoWidth === 0 ? pageWidth : videoWidth,
-            videoHeight: videoHeight === 0 ? pageHeight: videoHeight
+            videoWidth,
+            videoHeight
           });
         })
         .catch((e) => {

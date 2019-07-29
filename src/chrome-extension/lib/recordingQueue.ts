@@ -23,7 +23,7 @@ class RecordingQueue {
 
   complete () {
     this.dequeue();
-    this.isEmpty() || this.front();
+    this.isEmpty() || this.front()();
   }
 
   remove () {

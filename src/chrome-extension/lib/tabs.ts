@@ -84,7 +84,7 @@ class Tabs {
     if (this.getTab(id) === null) {
       this.createTab(id);
     }
-    if (width !== this.tabs[id].videoWidth) {
+    if (width !== this.tabs[id].videoWidth && typeof width === 'number') {
       this.tabs[id].videoWidth = width;
     }
   }
@@ -93,7 +93,7 @@ class Tabs {
     if (this.getTab(id) === null) {
       this.createTab(id);
     }
-    if (height !== this.tabs[id].videoHeight) {
+    if (height !== this.tabs[id].videoHeight && typeof height === 'number') {
       this.tabs[id].videoHeight = height;
     }
   }
