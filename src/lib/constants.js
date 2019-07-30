@@ -45,6 +45,7 @@ module.exports.MP4_TO_SILENT = [
 ];
 module.exports.MP4_TO_AAC = [
   '-vn',
+  '-ac 1',
   '-acodec libfdk_aac',
   '-b:a 200k',
   '-af aresample=async=1'
