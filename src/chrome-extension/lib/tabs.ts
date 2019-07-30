@@ -47,6 +47,10 @@ class Tabs {
     return (this.getTab(id) && this.getTab(id).generateFileList) ? this.getTab(id).generateFileList : {};
   }
 
+  getTimeoutId (id: number) {
+    return (this.getTab(id) && this.getTab(id).timeoutId) ? this.getTab(id).timeoutId : 0;
+  }
+
   createTab (id: number) {
     this.tabs[id] = Object.create(null);
     this.tabs[id].generateFileList = {};
@@ -122,6 +126,15 @@ class Tabs {
     }
     if (subS3Key !== this.tabs[id].subS3Key) {
       this.tabs[id].subS3Key = subS3Key;
+    }
+  }
+
+  setTimeoutId (id: number, timeoutId: number) {
+    if (this.getTab(id) === null) {
+      this.createTab(id);
+    }
+    if (timeoutId !== this.tabs[id].timeoutId) {
+      this.tabs[id].timeoutId = timeoutId;
     }
   }
 

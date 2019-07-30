@@ -1,3 +1,3 @@
 export type IAction = 'waiting' | 'start' | 'pause' | 'resume' | 'stop' | 'fail';
 
-export type IActionHelper = 'generateFile' | 'setVideoBounds' | 'ready';
+export type IActionHelper = 'generateFile' | 'setVideoBounds' | 'ready' | 'init';

@@ -11,6 +11,7 @@ export type ITabs = {
     partFileName: string;
     subS3Key: string;
     generateFileList: Record<string, string>;
+    timeoutId: number;
   }
 }
 

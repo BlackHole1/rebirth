@@ -20,9 +20,15 @@ const getRecordTasksAndStartTab = (num: number = RecordNumber) => {
           url: record.material_url
         }, tab => {
           const id = tab.id;
+          const setTimeoutId = setTimeout(() => {
+            actions.fail(id);
+          }, 1000 * 60 * 5);
+
           tabs.setDbId(id, record.id);
           tabs.setAction(id, 'waiting');
           tabs.setSubS3Key(id, record.sub_s3_key);
+          // @ts-ignore
+          tabs.setTimeoutId(id, setTimeoutId);
           sendLog('openURL', {
             dbId: record.id,
             recordInfo: record
@@ -56,7 +62,7 @@ chrome.runtime.onConnect.addListener(port => {
     const currentTabId = port.sender.tab.id;
     const params = [ currentTabId, tabs.getMediaRecorder(currentTabId) ];
 
-    if ([ 'start', 'stop', 'pause', 'resume', 'fail', 'generateFile', 'setVideoBounds' ].includes(data.action)) {
+    if ([ 'start', 'stop', 'pause', 'resume', 'fail', 'generateFile', 'setVideoBounds', 'init' ].includes(data.action)) {
       sendLog(`${data.action}.action`, {
         [`${data.action}ActionInfo`]: data,
         dbId: tabs.getDbId(currentTabId)
@@ -96,6 +102,10 @@ chrome.runtime.onConnect.addListener(port => {
           dbId: tabs.getDbId(currentTabId),
         }
       });
+    }
+
+    if (data.action === 'init') {
+      clearTimeout(tabs.getTimeoutId(currentTabId));
     }
   });
 });
