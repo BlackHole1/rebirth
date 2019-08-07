@@ -12,6 +12,7 @@ const {
   AWS_BUCKET,
   AWS_REGION,
   AWS_SECRET_ACCESS_KEY,
+  DB_SUB_S3_KEY,
 } = require('./constants');
 
 class Utils {
@@ -72,14 +73,12 @@ class Utils {
       ffmpeg(inputFile)
         .on('start', (commandLine) => {
           weblog.sendLog('ffmpeg.start', {
-            dbId: ffmpegOtherInfo.dbId,
             ffmpegCommand: commandLine,
             ffmpegOtherInfo
           });
         })
         .on('error', (err) => {
           weblog.sendLog('ffmpeg.error', {
-            dbId: ffmpegOtherInfo.dbId,
             ffmpegInputFile: inputName,
             ffmpegOutputFile: outputName,
             ffmpegErr: err.message,
@@ -89,7 +88,6 @@ class Utils {
         })
         .on('end', function() {
           weblog.sendLog('ffmpeg.end', {
-            dbId: ffmpegOtherInfo.dbId,
             ffmpegInputFile: inputName,
             ffmpegOutputFile: outputName,
             ffmpegOtherInfo
@@ -104,17 +102,16 @@ class Utils {
     });
   }
 
-  uploadFileToS3 (localFilePath, fileName, subS3Key, uploadFileOtherInfo) {
+  uploadFileToS3 (localFilePath, fileName, uploadFileOtherInfo) {
     return new Promise(resolve => {
       const baseLogData = {
-        dbId: uploadFileOtherInfo.dbId,
         uploadFileName: fileName,
         uploadLocalFilePath: localFilePath,
         uploadFileOtherInfo
       };
 
       const date = new Date();
-      const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${subS3Key}/${fileName.substring(8)}`;
+      const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${DB_SUB_S3_KEY}/${fileName.substring(8)}`;
       const params = {
         localFile: localFilePath,
         s3Params: {
@@ -150,7 +147,6 @@ class Utils {
   deleteFiles (fileList, deleteFilesOtherInfo) {
     return Promise.all(fileList.map(file => new Promise(resolve => {
       const baseLogData = {
-        dbId: deleteFilesOtherInfo.dbId,
         deleteFilesOtherInfo,
         deleteFile: file
       };

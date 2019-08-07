@@ -23,15 +23,13 @@ export const arrayToObject = (obj: Record<string, any>) => {
 };
 
 // 检测文件是否下载完成
-export const fileDownloadDone = (filenameRegex: string, dbId: number) => {
+export const fileDownloadDone = (filenameRegex: string) => {
   sendLog('checkFileDownload', {
-    dbId,
     filenameRegex
   });
   return new Promise((resolve) => {
     const timeoutId = setTimeout(() => {
       sendLog('checkFileDownload.timeout', {
-        dbId,
         filenameRegex
       }, 'warn');
       resolve();
@@ -45,7 +43,6 @@ export const fileDownloadDone = (filenameRegex: string, dbId: number) => {
           clearTimeout(timeoutId);
           setTimeout(() => {
             sendLog('checkFileDownload.done', {
-              dbId,
               filenameRegex,
               downloadInfo: downloadItem[0]
             });

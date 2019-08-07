@@ -1,6 +1,5 @@
 import { ITabs } from '../typing/background';
 import { IAction } from '../typing/rebirth';
-import { RecordNumber } from './constants';
 import { sendLog } from './ajax';
 import { makeID } from './utils';
 
@@ -39,10 +38,6 @@ class Tabs {
     return (this.getTab(id) && this.getTab(id).partFileName) ? this.getTab(id).partFileName : '';
   }
 
-  getSubS3Key (id: number) {
-    return (this.getTab(id) && this.getTab(id).subS3Key) ? this.getTab(id).subS3Key : 's3_key_is_null';
-  }
-
   getFileList (id: number) {
     return (this.getTab(id) && this.getTab(id).generateFileList) ? this.getTab(id).generateFileList : {};
   }
@@ -73,7 +68,6 @@ class Tabs {
 
     sendLog('setAction', {
       actionName: action,
-      dbId: this.getDbId(id),
     });
   }
 
@@ -120,15 +114,6 @@ class Tabs {
     }
   }
 
-  setSubS3Key (id: number, subS3Key: string) {
-    if (this.getTab(id) === null) {
-      this.createTab(id);
-    }
-    if (subS3Key !== this.tabs[id].subS3Key) {
-      this.tabs[id].subS3Key = subS3Key;
-    }
-  }
-
   setTimeoutId (id: number, timeoutId: number) {
     if (this.getTab(id) === null) {
       this.createTab(id);
@@ -148,18 +133,6 @@ class Tabs {
 
   deleteTab (id: number) {
     delete this.tabs[id];
-  }
-
-  getFreeNumber () {
-    const result = RecordNumber - (Object.keys(this.tabs).filter(tab => {
-      return this.tabs[tab].action !== 'stop';
-    }).length);
-
-    sendLog('tabs.getFreeNumber', {
-      freeNumber: result
-    });
-
-    return result;
   }
 }
 

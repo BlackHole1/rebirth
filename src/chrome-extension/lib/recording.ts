@@ -1,5 +1,4 @@
 import tabs from './tabs';
-import recordingQueue from './recordingQueue';
 import { captureConfig, mediaRecorderOptions, blobOptions } from './config';
 import { completeRecordTask, recordFail, sendLog } from './ajax';
 import { fileDownloadDone } from './utils';
@@ -16,16 +15,12 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
   // 开始进行录屏，加上ts-ignore，是因为@types/chrome package还没更新，导致其类型是错误的
   // @ts-ignore
   chrome.tabCapture.capture(captureConfig(pageWidth, pageHeight), stream => {
-    setTimeout(() => {
-      recordingQueue.complete();
-    }, 1000 * 3);
     if (stream === null) {
       chrome.tabs.sendMessage(id, {
         error: chrome.runtime.lastError
       });
 
       sendLog('capture.fail', {
-        dbId: tabs.getDbId(id),
         captureError: chrome.runtime.lastError
       }, 'error');
 
@@ -42,7 +37,6 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
     };
 
     mediaRecorder.onstop = () => {
-      const dbId = tabs.getDbId(id);
       const sourceFileName = tabs.getSourceFileName(id);
       const partFileName = tabs.getPartFileName(id);
       const superBuffer = new Blob(recordedBlobs, blobOptions);
@@ -54,15 +48,13 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
       link.setAttribute('download', `${sourceFileName}.webm`);
       link.click();
 
-      fileDownloadDone(sourceFileName, dbId)
+      fileDownloadDone(sourceFileName)
         .then(() => {
           const videoWidth = tabs.getVideoWidth(id);
           const videoHeight = tabs.getVideoHeight(id);
           completeRecordTask({
-            dbId,
             sourceFileName,
             partFileName,
-            subS3Key: tabs.getSubS3Key(id),
             fileList: tabs.getFileList(id),
             videoWidth,
             videoHeight
@@ -70,7 +62,6 @@ const start = (id: number, pageWidth: number, pageHeight: number): void => {
         })
         .catch((e) => {
           sendLog('fileDownload.fail', {
-            dbId,
             sourceFileName,
             fileDownloadFailMessage: e.message
           }, 'error');
@@ -113,7 +104,7 @@ const stop = (id: number, mediaRecorder: MediaRecorder, sourceFileName: string, 
 
 // 录制失败
 const fail = (id: number): void => {
-  recordFail(tabs.getDbId(id));
+  recordFail();
   setTimeout(() => {
     chrome.tabs.remove(id);
   }, 2000);

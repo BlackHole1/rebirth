@@ -1,8 +1,9 @@
 const http = require('http');
 const handleRequest = require('./lib/handleRequest');
 const startChrome = require('./lib/startChrome');
-const rerecord = require('./lib/rerecord');
+const servicesStatus = require('./lib/servicesStatus');
 const { PORT } = require('./lib/constants');
+const { exit } = require('./lib/exit');
 const weblog = require('./lib/weblog');
 
 const server = http.createServer(handleRequest);
@@ -15,24 +16,18 @@ server.listen(PORT, () => {
 // 打开chrome浏览器
 startChrome();
 
-// 当接收到k8s发来的关闭请求时，做出处理
-let status = false;
-const exit = (message) => {
-  if (status) return;
-  weblog.sendLog('process.kill', {
-    killMessage: message
-  });
-  status = true;
-  rerecord(() => {
-    weblog.sendAllLog(() => {
-      process.exit();
-    })
-  });
-};
-process.once('exit', () => exit('exit'));
-process.once('SIGTERM', () => exit('sigterm'));
+// 任何非自己意愿退出的，全部重录
+process.once('exit', () => exit('exit', true));
+process.once('SIGTERM', () => exit('sigterm', true));
 process.on('message', message => {
   if (message === 'shutdown') {
-    exit(message);
+    exit(message, true);
   }
 });
+
+// 模仿k8s的存活指针
+setInterval(() => {
+  if (!servicesStatus.isNormal) {
+    exit('serviceFail', true)
+  }
+}, 1000 * 5);

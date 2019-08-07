@@ -52,6 +52,9 @@ ENV LC_ALL zh_CN.UTF-8
 # 设置工作目录
 WORKDIR /etc/www
 
+# 设置开发环境变量
+ENV COMMIT_SHA_SHORT=$CI_COMMIT_SHORT_SHA
+
 # 配置开发环境
 RUN npm install -g node-gyp
 COPY src ./

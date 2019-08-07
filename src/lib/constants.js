@@ -15,6 +15,10 @@ module.exports.AWS_REGION = process.env.AWS_REGION;
 module.exports.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 module.exports.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 
+module.exports.DB_ID = process.env.DB_ID;
+module.exports.DB_MATERIAL_URL = process.env.DB_MATERIAL_URL;
+module.exports.DB_SUB_S3_KEY = process.env.DB_SUB_S3_KEY;
+
 // dev alpha beta staging production（dev为本地调试的环境）
 module.exports.ENV = process.env.CI_ENVIRONMENT_SLUG || 'dev';
 module.exports.KIBANA_URL = process.env.KIBANA_URL || 'https://collector.alo7.com/1';

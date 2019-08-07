@@ -7,5 +7,5 @@ module.exports = mysql.createPool({
   user: MYSQL_USERNAME,
   password: MYSQL_PASSWORD,
   database: MYSQL_DATABASE,
-  connectionLimit: 5
+  connectionLimit: 3
 });

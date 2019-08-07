@@ -1,32 +1,30 @@
 const { writeFileSync } = require('fs');
 const { homedir } = require('os');
 const mysqlService = require('../lib/mysql');
-const rerecord = require('../lib/rerecord');
-const recordTasks = require('../lib/recordTasks');
 const servicesStatus = require('../lib/servicesStatus');
 const weblog = require('../lib/weblog');
 const utils = require('../lib/utils');
+const rerecord = require('../lib/rerecord');
+const { exit } = require('../lib/exit');
 const { setTaskStatusIsComplete } = require('../lib/SQLConstants');
 const { WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC } = require('../lib/constants');
 
 // 完成录制
 const completeRecordTask = (req, res) => {
-  const { dbId, sourceFileName, partFileName, subS3Key, videoWidth, videoHeight, fileList } = req.body;
+  const { sourceFileName, partFileName, videoWidth, videoHeight, fileList } = req.body;
   let willDeleteFiles = [];
 
   const updateDB = s3URL => {
     mysqlService.getConnection()
       .then(async conn => {
-        const result = await utils.SQLHandle(conn, setTaskStatusIsComplete, 'setTaskStatusIsComplete')(s3URL, dbId);
+        const result = await utils.SQLHandle(conn, setTaskStatusIsComplete, 'setTaskStatusIsComplete')(s3URL);
         conn.release();
-        recordTasks.completeTask = dbId;
 
         res.sendJson(result);
       })
       .catch(e => {
         servicesStatus.setMysqlError = true;
         weblog.sendLog('completeRecord.fail', {
-          dbId,
           completeRecordFailMessage: e.message,
           completeRecordFailStack: e.stack || ''
         }, 'error');
@@ -42,12 +40,12 @@ const completeRecordTask = (req, res) => {
         return utils.ffmpegHelper(`${sourceFileName}.mp4`, fileName, ffmpegConfig, req.body)
           .then(({ outputFile }) => {
             willDeleteFiles.push(outputFile);
-            return utils.uploadFileToS3(outputFile, fileName, subS3Key, req.body);
+            return utils.uploadFileToS3(outputFile, fileName, req.body);
           });
       };
 
-      const uploadSourceWebmS3 = () => utils.uploadFileToS3(inputFile, `${sourceFileName}.webm`, subS3Key, req.body);
-      const uploadSourceMP4S3 = () => utils.uploadFileToS3(outputFile, `${sourceFileName}.mp4`, subS3Key, req.body);
+      const uploadSourceWebmS3 = () => utils.uploadFileToS3(inputFile, `${sourceFileName}.webm`, req.body);
+      const uploadSourceMP4S3 = () => utils.uploadFileToS3(outputFile, `${sourceFileName}.mp4`, req.body);
       const uploadFileToS3 = () => uploadSourceWebmS3().then(uploadSourceMP4S3);
 
       if (partFileName === '') {
@@ -66,13 +64,14 @@ const completeRecordTask = (req, res) => {
       Object.keys(fileList).forEach(name => {
         const filePath = `${homedir}/Downloads/${name}`;
         writeFileSync(filePath, fileList[name], 'utf-8');
-        utils.uploadFileToS3(filePath, name, subS3Key, req.body);
+        utils.uploadFileToS3(filePath, name, req.body);
         willDeleteFiles.push(filePath);
       });
     })
     .then(() => utils.deleteFiles(willDeleteFiles, req.body))
+    .then(() => exit('completeTask', false))
     .catch(() => {
-      rerecord(dbId);
+      exit('completeFail', true);
     });
 
   res.sendJson({});

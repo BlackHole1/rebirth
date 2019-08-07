@@ -1,27 +1,20 @@
 const mysqlService = require('./mysql');
 const weblog = require('./weblog');
-const recordTasks = require('./recordTasks');
 const { setTaskStatusIsWaiting } = require('./SQLConstants');
 const utils = require('./utils');
 
 module.exports = (cb) => {
-  let idList;
-  if (typeof cb === 'function') {
-    const tasks = recordTasks.getTasks;
-    if (tasks.length === 0) return cb();
-    idList = tasks.map(task => `'${task.id}'`).join();
-  } else {
-    idList = [cb].join();
-  }
 
-  weblog.sendLog('reRecode.ready', {
-    reRecodeList: idList
-  });
+  weblog.sendLog('reRecode.ready');
 
   mysqlService.getConnection()
     .then(async conn => {
-      await utils.SQLHandle(conn, setTaskStatusIsWaiting, 'setTaskStatusIsWaiting')(idList);
+      await utils.SQLHandle(conn, setTaskStatusIsWaiting, 'setTaskStatusIsWaiting')();
       conn.release();
+    })
+    .then(() => {
+      weblog.sendLog('reRecode.success');
+      cb();
     })
     .catch(e => {
       weblog.sendLog('reRecode.fail', {
@@ -29,11 +22,5 @@ module.exports = (cb) => {
         reRecodeFailStack: e.stack || ''
       }, 'error');
       cb();
-    })
-    .then(() => {
-      weblog.sendLog('reRecode.success', {
-        reRecodeList: idList
-      });
-      typeof cb === 'function' && cb();
     });
 };

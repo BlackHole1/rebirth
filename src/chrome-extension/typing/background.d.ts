@@ -9,7 +9,6 @@ export type ITabs = {
     videoHeight: number;
     sourceFileName: string;
     partFileName: string;
-    subS3Key: string;
     generateFileList: Record<string, string>;
     timeoutId: number;
   }
