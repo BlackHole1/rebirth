@@ -2,6 +2,9 @@ FROM ubuntu:18.04
 
 MAINTAINER Black-Hole<158blackhole@gmail.com>
 
+# 设置Dockerfile在build时传入的build-args变量
+ARG CI_COMMIT_SHORT_SHA
+
 # 设置源
 RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
 RUN apt-get clean
