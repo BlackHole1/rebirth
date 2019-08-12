@@ -1,16 +1,11 @@
-const mysqlService = require('../lib/mysql');
 const servicesStatus = require('../lib/servicesStatus');
 const weblog = require('../lib/weblog');
-const utils = require('../lib/utils');
+const { recordModel } = require('../model');
 const { DB_ID, DB_MATERIAL_URL } = require('../lib/constants');
-const { setTaskStatusIsRecording } = require('../lib/SQLConstants');
 
 const getRecord = (req, res) => {
-  mysqlService.getConnection()
-    .then(async conn => {
-      await utils.SQLHandle(conn, setTaskStatusIsRecording, 'setTaskStatusIsRecording')();
-
-      conn.release();
+  recordModel()
+    .then(() => {
       res.sendJson({
         id: DB_ID,
         material_url: DB_MATERIAL_URL,

@@ -165,19 +165,6 @@ class Utils {
     })))
   }
 
-  // 执行SQL语句，并发送相关日志
-  SQLHandle (conn, sql, name) {
-    return async (...params) => {
-      const SQLQuery = sql(...params);
-      const result = await conn.query(SQLQuery);
-      weblog.sendLog(name, {
-        [name]: this.arrayToObject(result),
-        SQLQuery
-      });
-      return result;
-    }
-  }
-
   isMac () {
     return type() === 'Darwin';
   }

@@ -12,14 +12,17 @@ const getRecordTasksAndStartTab = () => {
         url: data.material_url
       }, tab => {
         const id = tab.id;
-        const setTimeoutId = setTimeout(() => {
+
+        // 5分钟内必须调用init函数，不然录制状态则为失败
+        const initTimeoutId = setTimeout(() => {
+          sendLog('initTimeout');
           actions.fail(id);
         }, 1000 * 60 * 5);
 
         tabs.setDbId(id, data.id);
         tabs.setAction(id, 'waiting');
         // @ts-ignore
-        tabs.setTimeoutId(id, setTimeoutId);
+        tabs.setInitTimeoutId(id, initTimeoutId);
         sendLog('openURL', {
           recordInfo: data
         });
@@ -83,7 +86,7 @@ chrome.runtime.onConnect.addListener(port => {
     }
 
     if (data.action === 'init') {
-      clearTimeout(tabs.getTimeoutId(currentTabId));
+      clearTimeout(tabs.getInitTimeoutId(currentTabId));
     }
   });
 });

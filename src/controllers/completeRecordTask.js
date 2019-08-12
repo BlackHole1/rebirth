@@ -1,12 +1,10 @@
 const { writeFileSync } = require('fs');
 const { homedir } = require('os');
-const mysqlService = require('../lib/mysql');
 const servicesStatus = require('../lib/servicesStatus');
 const weblog = require('../lib/weblog');
 const utils = require('../lib/utils');
-const rerecord = require('../lib/rerecord');
+const { completeModel } = require('../model');
 const { exit } = require('../lib/exit');
-const { setTaskStatusIsComplete } = require('../lib/SQLConstants');
 const { WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC } = require('../lib/constants');
 
 // 完成录制
@@ -15,11 +13,8 @@ const completeRecordTask = (req, res) => {
   let willDeleteFiles = [];
 
   const updateDB = s3URL => {
-    mysqlService.getConnection()
-      .then(async conn => {
-        const result = await utils.SQLHandle(conn, setTaskStatusIsComplete, 'setTaskStatusIsComplete')(s3URL);
-        conn.release();
-
+    completeModel(s3URL)
+      .then(result => {
         res.sendJson(result);
       })
       .catch(e => {

@@ -1,17 +1,11 @@
-const mysqlService = require('./mysql');
 const weblog = require('./weblog');
-const { setTaskStatusIsWaiting } = require('./SQLConstants');
-const utils = require('./utils');
+const { waitingModel } = require('../model');
 
 module.exports = (cb) => {
 
   weblog.sendLog('reRecode.ready');
 
-  mysqlService.getConnection()
-    .then(async conn => {
-      await utils.SQLHandle(conn, setTaskStatusIsWaiting, 'setTaskStatusIsWaiting')();
-      conn.release();
-    })
+  waitingModel()
     .then(() => {
       weblog.sendLog('reRecode.success');
       cb();

@@ -103,14 +103,8 @@ const stop = (id: number, mediaRecorder: MediaRecorder, sourceFileName: string, 
 };
 
 // 录制失败
-const fail = (id: number): void => {
+const fail = (): void => {
   recordFail();
-  setTimeout(() => {
-    chrome.tabs.remove(id);
-  }, 2000);
-
-  // 失败者不配拥有姓名
-  tabs.deleteTab(id);
 };
 
 const actions: { [keys: string]: Function } = {

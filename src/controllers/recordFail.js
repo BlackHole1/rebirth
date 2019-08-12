@@ -1,17 +1,12 @@
-const mysqlService = require('../lib/mysql');
 const servicesStatus = require('../lib/servicesStatus');
 const weblog = require('../lib/weblog');
-const utils = require('../lib/utils');
+const { recordFailModel } = require('../model');
 const { exit } = require('../lib/exit');
-const { setTaskStatusIsFail } = require('../lib/SQLConstants');
 
 // 录制失败
 const recordFail = (req, res) => {
-  mysqlService.getConnection()
-    .then(async conn => {
-      const result = await utils.SQLHandle(conn, setTaskStatusIsFail, 'setTaskStatusIsFail')();
-      conn.release();
-
+  recordFailModel()
+    .then(result => {
       res.sendJson(result);
     })
     .then(() => exit('callRecordFailAPI', false))
