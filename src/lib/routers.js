@@ -2,6 +2,7 @@ const { CONTENTTYPE_TEXT } = require('./constants');
 const getRecord = require('../controllers/getRecord');
 const completeRecordTask = require('../controllers/completeRecordTask');
 const recordFail = require('../controllers/recordFail');
+const rerecordTask = require('../controllers/rerecordTask');
 const logHandle = require('../controllers/logHandle');
 
 module.exports =  (req, res) => {
@@ -18,6 +19,9 @@ module.exports =  (req, res) => {
     },
     '/recordFail': (req, res) => {
       recordFail(req, res);
+    },
+    '/rerecordTask': (req, res) => {
+      rerecordTask(req, res)
     },
     '/logHandle': (req, res) => {
       logHandle(req, res);

@@ -46,13 +46,13 @@ chrome.runtime.onConnect.addListener(port => {
     const currentTabId = port.sender.tab.id;
     const params = [ currentTabId, tabs.getMediaRecorder(currentTabId) ];
 
-    if ([ 'start', 'stop', 'pause', 'resume', 'fail', 'generateFile', 'setVideoBounds', 'init' ].includes(data.action)) {
+    if ([ 'start', 'stop', 'pause', 'resume', 'fail', 'generateFile', 'setVideoBounds', 'init', 'rerecord' ].includes(data.action)) {
       sendLog(`${data.action}.action`, {
         [`${data.action}ActionInfo`]: data,
       });
     }
 
-    if ([ 'pause', 'resume', 'fail' ].includes(data.action)) {
+    if ([ 'pause', 'resume', 'fail', 'rerecord' ].includes(data.action)) {
       actions[data.action](...params);
     }
 

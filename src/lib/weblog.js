@@ -3,7 +3,7 @@ const git = require('git-rev-sync');
 const { WebLog } = require('weblog');
 const { WebLogPluginKibana } = require('weblog-plugin-kibana');
 const { version } = require('../package');
-const { ENV, KIBANA_TOKEN, KIBANA_URL, DB_SUB_S3_KEY, DB_ID, DB_MATERIAL_URL } = require('./constants');
+const { ENV, KIBANA_TOKEN, KIBANA_URL, DB_SUB_S3_KEY, DB_ID, DB_MATERIAL_URL, REPEAT, MAX_REPEAT } = require('./constants');
 
 const getGitHash = () => {
   // 在集群里是没有.git目录的
@@ -46,7 +46,9 @@ class Log {
     this.weblog.setClientPayload({
       dbId: DB_ID,
       sub_s3_key: DB_SUB_S3_KEY,
-      material_url: DB_MATERIAL_URL
+      material_url: DB_MATERIAL_URL,
+      repeat: REPEAT,
+      max_repeat: MAX_REPEAT
     })
   }
 

@@ -16,6 +16,8 @@ module.exports.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 module.exports.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 
 module.exports.DB_ID = process.env.DB_ID;
+module.exports.REPEAT = Number(process.env.DB_REPEAT);
+module.exports.MAX_REPEAT = Number(process.env.MAX_REPEAT);
 module.exports.DB_MATERIAL_URL = process.env.DB_MATERIAL_URL;
 module.exports.DB_SUB_S3_KEY = process.env.DB_SUB_S3_KEY;
 

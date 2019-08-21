@@ -12,7 +12,7 @@ interface Window {
 
 window.rebirth = {} as rebirth;
 
-[ 'pause', 'resume', 'fail', 'init' ].forEach((m) => {
+[ 'pause', 'resume', 'fail', 'init', 'rerecord' ].forEach((m) => {
   window.rebirth[m] = () => {
     const msg = {
       'action': m,

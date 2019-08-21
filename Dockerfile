@@ -4,6 +4,7 @@ MAINTAINER Black-Hole<158blackhole@gmail.com>
 
 # 设置Dockerfile在build时传入的build-args变量
 ARG CI_COMMIT_SHORT_SHA
+ARG MAX_REPEAT
 
 # 设置源
 RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
@@ -57,6 +58,7 @@ WORKDIR /etc/www
 
 # 设置开发环境变量
 ENV COMMIT_SHA_SHORT=$CI_COMMIT_SHORT_SHA
+ENV MAX_REPEAT=$MAX_REPEAT
 
 # 配置开发环境
 RUN npm install -g node-gyp

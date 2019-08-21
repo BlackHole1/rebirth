@@ -49,7 +49,6 @@ export const completeRecordTask = (params: {
         completeRecordTask: params,
         completeRecordTaskError: e.message
       }, 'error');
-      console.error(e);
     });
 };
 
@@ -63,6 +62,17 @@ export const recordFail = () => {
       sendLog('ajax.recordFail.fail', {
         recordFail: e.message
       }, 'error');
-      console.error(e);
+    });
+};
+
+export const rerecord = () => {
+  fetch(`${SERVER_URL}/rerecordTask`)
+    .then(() => {
+      sendLog('ajax.rerecord');
+    })
+    .catch(e => {
+      sendLog('ajax.rerecord.fail', {
+        rerecordFail: e.message
+      }, 'error');
     });
 };

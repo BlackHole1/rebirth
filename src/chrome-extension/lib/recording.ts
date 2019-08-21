@@ -1,6 +1,6 @@
 import tabs from './tabs';
 import { captureConfig, mediaRecorderOptions, blobOptions } from './config';
-import { completeRecordTask, recordFail, sendLog } from './ajax';
+import { completeRecordTask, recordFail, sendLog, rerecord } from './ajax';
 import { fileDownloadDone } from './utils';
 
 // 开始录屏
@@ -112,7 +112,8 @@ const actions: { [keys: string]: Function } = {
   pause,
   resume,
   stop,
-  fail
+  fail,
+  rerecord
 };
 
 export default actions;

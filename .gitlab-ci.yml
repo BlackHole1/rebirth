@@ -75,7 +75,7 @@ variables:
     - rm -rf src/webpack.config.js
     - echo $IMAGE_PER_BRANCH_COMMIT
     - docker pull $IMAGE_PER_BRANCH || true
-    - docker build --pull --cache-from $IMAGE_PER_BRANCH -t $IMAGE_PER_BRANCH_COMMIT -t $IMAGE_PER_BRANCH --build-arg CI_COMMIT_SHORT_SHA=$CI_COMMIT_SHORT_SHA -f Dockerfile .
+    - docker build --pull --cache-from $IMAGE_PER_BRANCH -t $IMAGE_PER_BRANCH_COMMIT -t $IMAGE_PER_BRANCH --build-arg CI_COMMIT_SHORT_SHA --build-arg MAX_REPEAT -f Dockerfile .
     - docker push $IMAGE_PER_BRANCH_COMMIT
     - docker push $IMAGE_PER_BRANCH
   retry: 2
