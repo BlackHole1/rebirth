@@ -7,7 +7,6 @@ const {
   setTaskStatusIsComplete,
   setTaskStatusIsWaiting,
   setTaskStatusIsWaitingByPage,
-  setTaskStatusIsFailByRepeat
 } = require('../lib/SQLConstants');
 
 // 把数据库操作进一步封装
@@ -28,11 +27,6 @@ const baseModel = (sql, sqlName) => {
 // 更新数据状态为录制失败
 const recordFailModel = () => {
   return baseModel(setTaskStatusIsFail(), 'setTaskStatusIsFail');
-};
-
-// 更新数据状态为录制失败(当重新录制次数大于最大次数时触发)
-const recordFailModelByRepeat = () => {
-  return baseModel(setTaskStatusIsFailByRepeat(), 'setTaskStatusIsFailByRepeat');
 };
 
 // 更新数据状态为正在录制
@@ -60,4 +54,3 @@ module.exports.recordModel = recordModel;
 module.exports.completeModel = completeModel;
 module.exports.waitingModel = waitingModel;
 module.exports.waitingModelByPage = waitingModelByPage;
-module.exports.recordFailModelByRepeat = recordFailModelByRepeat;

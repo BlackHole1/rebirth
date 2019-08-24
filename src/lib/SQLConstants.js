@@ -20,11 +20,6 @@ module.exports.setTaskStatusIsFail = () => {
   return `UPDATE ${MYSQL_TABLE} SET status='record_fail', updated_by='rebirth' WHERE id='${DB_ID}'`;
 };
 
-// 录制失败(当重新录制次数大于最大次数时触发)
-module.exports.setTaskStatusIsFailByRepeat = () => {
-  return `UPDATE ${MYSQL_TABLE} SET status='record_fail', \`repeat\`=${REPEAT + 1}, updated_by='rebirth' WHERE id='${DB_ID}'`;
-};
-
 // 完成录制
 module.exports.setTaskStatusIsComplete = (s3URL) => {
   return `UPDATE ${MYSQL_TABLE} SET status='record_complete', merge_result_url='${s3URL}', updated_by='rebirth' WHERE id='${DB_ID}'`;

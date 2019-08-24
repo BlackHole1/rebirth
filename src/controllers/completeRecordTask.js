@@ -13,7 +13,7 @@ const completeRecordTask = (req, res) => {
   let willDeleteFiles = [];
 
   const updateDB = s3URL => {
-    completeModel(s3URL)
+    return completeModel(s3URL)
       .then(result => {
         res.sendJson(result);
       })
