@@ -4,6 +4,9 @@ xvfb-run --listen-tcp --server-num=76 --server-arg="-screen 0 2048x1024x24" node
 
 sleep 3s
 
+# 转发接口
+socat tcp-listen:9223,fork tcp:localhost:9222 &
+
 # 获取node进程的PID
 NODE_PID=$(lsof -i:80 | grep node | awk 'NR==1,$NF=" "{print $2}')
 
