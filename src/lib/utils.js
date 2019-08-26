@@ -26,8 +26,23 @@ class Utils {
     })
   }
 
+  // 转为string
   ToString (val) {
     return typeof val === 'string' ? val : JSON.stringify(val);
+  }
+
+  // 日期格式化
+  time() {
+    const paddingZero = val => {
+      return (val < 10) ? `0${val}` : val;
+    };
+
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = paddingZero(date.getMonth() + 1);
+    const day = paddingZero(date.getDate());
+
+    return `${year}/${month}/${day}`;
   }
 
   // 把对象里的数组转成对象形式
@@ -102,6 +117,7 @@ class Utils {
     });
   }
 
+  // 上传文件到s3
   uploadFileToS3 (localFilePath, fileName, uploadFileOtherInfo) {
     return new Promise(resolve => {
       const baseLogData = {
@@ -110,8 +126,7 @@ class Utils {
         uploadFileOtherInfo
       };
 
-      const date = new Date();
-      const path = `h5_outputs/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${DB_SUB_S3_KEY}/${fileName.substring(8)}`;
+      const path = `h5_outputs/${this.time()}/${DB_SUB_S3_KEY}/${fileName.substring(8)}`;
       const params = {
         localFile: localFilePath,
         s3Params: {
