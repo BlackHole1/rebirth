@@ -1,5 +1,4 @@
 const { type, homedir } = require('os');
-const rimraf = require('rimraf');
 const ffmpeg = require('fluent-ffmpeg');
 const s3 = require('@auth0/s3');
 const weblog = require('./weblog');
@@ -79,34 +78,32 @@ class Utils {
   }
 
   // ffmpeg处理函数
-  ffmpegHelper (inputName, outputName, ffmpegParams, ffmpegOtherInfo) {
+  ffmpegHelper (inputName, outputName, ffmpegParams) {
     return new Promise((resolve, reject) => {
       const baseFile = `${homedir}/Downloads/`;
       const inputFile = baseFile + inputName;
       const outputFile = baseFile + outputName;
 
+      const logBase = {
+        ffmpegInputFile: inputName,
+        ffmpegOutputFile: outputName,
+      };
+
       ffmpeg(inputFile)
         .on('start', (commandLine) => {
           weblog.sendLog('ffmpeg.start', {
             ffmpegCommand: commandLine,
-            ffmpegOtherInfo
           });
         })
         .on('error', (err) => {
           weblog.sendLog('ffmpeg.error', {
-            ffmpegInputFile: inputName,
-            ffmpegOutputFile: outputName,
+            ...logBase,
             ffmpegErr: err.message,
-            ffmpegOtherInfo
           });
           reject();
         })
         .on('end', function() {
-          weblog.sendLog('ffmpeg.end', {
-            ffmpegInputFile: inputName,
-            ffmpegOutputFile: outputName,
-            ffmpegOtherInfo
-          });
+          weblog.sendLog('ffmpeg.end', logBase);
           resolve({
             inputFile,
             outputFile
@@ -118,12 +115,11 @@ class Utils {
   }
 
   // 上传文件到s3
-  uploadFileToS3 (localFilePath, fileName, uploadFileOtherInfo) {
+  uploadFileToS3 (localFilePath, fileName) {
     return new Promise(resolve => {
       const baseLogData = {
         uploadFileName: fileName,
         uploadLocalFilePath: localFilePath,
-        uploadFileOtherInfo
       };
 
       const path = `h5_outputs/${this.time()}/${DB_SUB_S3_KEY}/${fileName.substring(8)}`;
@@ -157,27 +153,6 @@ class Utils {
         resolve(s3URL);
       });
     })
-  }
-
-  deleteFiles (fileList, deleteFilesOtherInfo) {
-    return Promise.all(fileList.map(file => new Promise(resolve => {
-      const baseLogData = {
-        deleteFilesOtherInfo,
-        deleteFile: file
-      };
-
-      rimraf(file, (e) => {
-        if (e) {
-          weblog.sendLog('deleteFile.fail', {
-            ...baseLogData,
-            deleteFileFail: e
-          }, 'error');
-        } else {
-          weblog.sendLog('deleteFile.success', baseLogData);
-        }
-        resolve();
-      })
-    })))
   }
 
   isMac () {
