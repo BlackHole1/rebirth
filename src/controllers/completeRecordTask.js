@@ -5,7 +5,7 @@ const weblog = require('../lib/weblog');
 const utils = require('../lib/utils');
 const { completeModel } = require('../model');
 const { exit } = require('../lib/exit');
-const { WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC } = require('../lib/constants');
+const { WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC, DB_SUB_S3_KEY } = require('../lib/constants');
 
 // 完成录制
 const completeRecordTask = (req, res) => {
@@ -28,15 +28,16 @@ const completeRecordTask = (req, res) => {
       });
   };
 
+  const s3BaseDir = `h5_outputs/${utils.time()}/${DB_SUB_S3_KEY}`;
   utils.ffmpegHelper(`${sourceFileName}.webm`, `${sourceFileName}.mp4`, WEBM_TO_MP4(videoWidth, videoHeight), req.body)
     .then(({ inputFile, outputFile }) => {
       const convAndUpload = (fileName, ffmpegConfig) => {
         return utils.ffmpegHelper(`${sourceFileName}.mp4`, fileName, ffmpegConfig)
-          .then(({ outputFile }) => utils.uploadFileToS3(outputFile, fileName));
+          .then(({ outputFile }) => utils.uploadFileToS3(outputFile, fileName, s3BaseDir));
       };
 
-      const uploadSourceWebmS3 = () => utils.uploadFileToS3(inputFile, `${sourceFileName}.webm`);
-      const uploadSourceMP4S3 = () => utils.uploadFileToS3(outputFile, `${sourceFileName}.mp4`);
+      const uploadSourceWebmS3 = () => utils.uploadFileToS3(inputFile, `${sourceFileName}.webm`, s3BaseDir);
+      const uploadSourceMP4S3 = () => utils.uploadFileToS3(outputFile, `${sourceFileName}.mp4`, s3BaseDir);
       const uploadFileToS3 = () => uploadSourceWebmS3().then(uploadSourceMP4S3);
 
       if (partFileName === '') {
@@ -55,7 +56,7 @@ const completeRecordTask = (req, res) => {
       Object.keys(fileList).forEach(name => {
         const filePath = `${homedir}/Downloads/${name}`;
         writeFileSync(filePath, fileList[name], 'utf-8');
-        utils.uploadFileToS3(filePath, name);
+        utils.uploadFileToS3(filePath, name, s3BaseDir);
       });
     })
     .then(() => exit('completeTask', false))

@@ -11,7 +11,6 @@ const {
   AWS_BUCKET,
   AWS_REGION,
   AWS_SECRET_ACCESS_KEY,
-  DB_SUB_S3_KEY,
 } = require('./constants');
 
 class Utils {
@@ -115,14 +114,14 @@ class Utils {
   }
 
   // 上传文件到s3
-  uploadFileToS3 (localFilePath, fileName) {
+  uploadFileToS3 (localFilePath, fileName, s3BaseDir) {
     return new Promise(resolve => {
       const baseLogData = {
         uploadFileName: fileName,
         uploadLocalFilePath: localFilePath,
       };
 
-      const path = `h5_outputs/${this.time()}/${DB_SUB_S3_KEY}/${fileName.substring(8)}`;
+      const path = `${s3BaseDir}/${fileName.substring(8)}`;
       const params = {
         localFile: localFilePath,
         s3Params: {
