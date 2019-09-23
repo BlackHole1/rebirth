@@ -9,9 +9,20 @@ const { WEBM_TO_MP4, MP4_TO_SILENT, MP4_TO_AAC, DB_SUB_S3_KEY } = require('../li
 
 // 完成录制
 const completeRecordTask = (req, res) => {
-  const { sourceFileName, partFileName, videoWidth, videoHeight, fileList } = req.body;
-
-  weblog.sendLog('complete.req.body', req.body);
+  const { sourceFileName, partFileName, videoWidth, videoHeight } = req.body;
+  const fileList = req.body.fileList || {};
+  const files = {};
+  Object.keys(fileList).forEach((name, index) => {
+    files[`name${index}`] = name;
+    files[`body${index}`] = req.body.fileList[name];
+  });
+  weblog.sendLog('complete.req.body', {
+    sourceFileName,
+    partFileName,
+    videoWidth,
+    videoHeight,
+    files
+  });
 
   const updateDB = s3URL => {
     return completeModel(s3URL)
@@ -52,6 +63,11 @@ const completeRecordTask = (req, res) => {
     })
     .then(updateDB)
     .then(() => {
+      weblog.sendLog('writeFile', {
+        filesNumber: Object.keys(fileList).length,
+        filesListType: ({}).toString.call(req.body.fileList)
+      });
+
       // 根据rebirth.generateFile接口保存的文件内容，批量写入文件、上传S3
       Object.keys(fileList).forEach(name => {
         const filePath = `${homedir}/Downloads/${name}`;
