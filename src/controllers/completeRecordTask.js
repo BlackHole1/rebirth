@@ -69,11 +69,11 @@ const completeRecordTask = (req, res) => {
       });
 
       // 根据rebirth.generateFile接口保存的文件内容，批量写入文件、上传S3
-      Object.keys(fileList).forEach(name => {
+      return Promise.all(Object.keys(fileList).map(name => {
         const filePath = `${homedir}/Downloads/${name}`;
         writeFileSync(filePath, fileList[name], 'utf-8');
-        utils.uploadFileToS3(filePath, name, s3BaseDir);
-      });
+        return utils.uploadFileToS3(filePath, name, s3BaseDir);
+      }));
     })
     .then(() => exit('completeTask', false))
     .catch(() => {
