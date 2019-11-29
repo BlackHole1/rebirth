@@ -16,7 +16,7 @@ const getRecordTasksAndStartTab = () => {
         // 5分钟内必须调用init函数，不然录制状态则为失败
         const initTimeoutId = setTimeout(() => {
           sendLog('initTimeout');
-          actions.fail(id);
+          actions.rerecord(id);
         }, 1000 * 60 * 5);
 
         tabs.setDbId(id, data.id);
