@@ -47,19 +47,17 @@ const completeRecordTask = (req, res) => {
           .then(({ outputFile }) => utils.uploadFileToS3(outputFile, fileName, s3BaseDir));
       };
 
-      const uploadSourceWebmS3 = () => utils.uploadFileToS3(inputFile, `${sourceFileName}.webm`, s3BaseDir);
       const uploadSourceMP4S3 = () => utils.uploadFileToS3(outputFile, `${sourceFileName}.mp4`, s3BaseDir);
-      const uploadFileToS3 = () => uploadSourceWebmS3().then(uploadSourceMP4S3);
 
       if (partFileName === '') {
-        return uploadFileToS3();
+        return uploadSourceMP4S3();
       }
 
       return Promise.all([
         convAndUpload(`${partFileName}.mp4`, MP4_TO_SILENT),
         convAndUpload(`${partFileName}.aac`, MP4_TO_AAC),
       ])
-        .then(uploadFileToS3)
+        .then(uploadSourceMP4S3)
     })
     .then(updateDB)
     .then(() => {
