@@ -55,6 +55,7 @@ const completeRecordTask = (req, res) => {
         convAndUpload(`${partFileName}.mp4`, MP4_TO_SILENT),
         convAndUpload(`${partFileName}.aac`, MP4_TO_AAC),
       ])
+        .then(data => data[0]);
     })
     .then(updateDB)
     .then(() => {
